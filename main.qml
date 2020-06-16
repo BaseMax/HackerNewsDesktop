@@ -12,8 +12,98 @@ ApplicationWindow {
 
     StackView {
         id: stackView
+        property bool searchMode: false
         initialItem: mainpage
         anchors.fill: parent
+    }
+
+    Rectangle {
+        id: toolbar
+        width: parent.width
+        height: 80
+        RowLayout {
+            x: 90
+            anchors.verticalCenter: parent.verticalCenter
+            width: parent.width - 100
+            height: parent.height
+            RowLayout {
+                id: appinfo
+                Label {
+                    id: appicon
+                    font.family: "fontello"
+                    text: "\uf111"
+                    color: "#f56565"
+                    font.pixelSize: 15
+                }
+                Label {
+                    id: appname
+                    text: "Hacker News"
+                    font.pixelSize: 20
+                    font.bold: Font.Medium
+                }
+            }
+            ListView {
+                id: tabbar
+//                        Layout.alignment: Qt.AlignVCenter
+                Layout.bottomMargin: 18
+                Layout.leftMargin: 50
+//                        Layout.preferredWidth: toolbar.width
+                Layout.fillWidth: true
+                currentIndex: 0
+                orientation: ListView.Horizontal
+                interactive: false
+                model: ["New", "Top", "Search", "Submit"]
+                spacing: 10
+                delegate: Item {
+                    width: 70
+                    height: 20
+                    RowLayout {
+//                            Layout.leftMargin: 40
+                        Label {
+                            id: newicon
+                            font.family: "fontello"
+                            text: tabbar.currentIndex == index ? "\uf111" : "\uf10c"
+                            color: "#f56565"
+                        }
+                        Label {
+                            id: newtext
+                            text: modelData
+                            color: tabbar.currentIndex == index ? "#f56565" : "black"
+                            MouseArea {
+                                anchors.fill: parent
+                                onClicked: {
+                                    if (modelData == "Search") {
+                                        stackView.searchMode = true
+                                    }
+                                    if (tabbar.currentIndex == 2) {
+                                        stackView.searchMode = false
+                                    }
+
+                                    tabbar.currentIndex = index
+                                }
+                                cursorShape: Qt.PointingHandCursor
+                            }
+                        }
+                    }
+                }
+            }
+            MyButton {
+                Layout.rightMargin: 70
+                contentText.text: "Login"
+                contentText.color: "#f56565"
+                bgitem.color: "transparent"
+                bgitem.border.width: 1
+                bgitem.border.color: "#f56565"
+            }
+        }
+    }
+
+    Rectangle {
+        id: toolbarseprator
+        anchors.top: toolbar.bottom
+        width: parent.width
+        height: 1.5
+        color: "#E0E0E0"
     }
 
     Component {
@@ -28,89 +118,48 @@ ApplicationWindow {
             }
 
             Rectangle {
-                id: toolbar
-                width: parent.width
-                height: 80
+                id: searchbar
+                visible: stackView.searchMode
+                width: listviewbackground.width
+                height: 50
+                x: listviewbackground.x
+                y: toolbar.height + 20
+                color: "transparent"
                 RowLayout {
-                    x: listviewbackground.x
-                    anchors.verticalCenter: parent.verticalCenter
-                    width: parent.width - 100
-                    height: parent.height
-                    RowLayout {
-                        id: appinfo
-                        Label {
-                            id: appicon
-                            font.family: "fontello"
-                            text: "\uf111"
-                            color: "#f56565"
-                            font.pixelSize: 15
-                        }
-                        Label {
-                            id: appname
-                            text: "Hacker News"
-                            font.pixelSize: 20
-                            font.bold: Font.Medium
-                        }
-                    }
-                    ListView {
-                        id: tabbar
-//                        Layout.alignment: Qt.AlignVCenter
-                        Layout.bottomMargin: 18
-                        Layout.leftMargin: 50
-//                        Layout.preferredWidth: toolbar.width
+                    anchors.fill: parent
+                    Rectangle {
                         Layout.fillWidth: true
-                        currentIndex: 0
-                        orientation: ListView.Horizontal
-                        interactive: false
-                        model: ["New", "Top", "Search", "Submit"]
-                        spacing: 10
-                        delegate: Item {
-                            width: 70
-                            height: 20
-                            RowLayout {
-//                            Layout.leftMargin: 40
-                                Label {
-                                    id: newicon
-                                    font.family: "fontello"
-                                    text: tabbar.currentIndex == index ? "\uf111" : "\uf10c"
-                                    color: "#f56565"
-                                }
-                                Label {
-                                    id: newtext
-                                    text: modelData
-                                    color: tabbar.currentIndex == index ? "#f56565" : "black"
-                                    MouseArea {
-                                        anchors.fill: parent
-                                        onClicked: {
-                                            tabbar.currentIndex = index
-                                        }
-                                    }
-                                }
-                            }
+                        height: 40
+                        radius: 10
+//                        color: "#FAFAFA"
+                        border.width: 0.5
+                        border.color: "#E0E0E0"
+                        TextInput {
+                            width: parent.width - 10
+                            height: parent.height - 20
+                            anchors.verticalCenter: parent.verticalCenter
+                            anchors.left: parent.left
+                            anchors.leftMargin: 20
+                            maximumLength: 90
                         }
                     }
+
                     MyButton {
-//                        Layout.fillWidth: true
-//                        Layout.alignment: Qt.AlignRight
-                        Layout.rightMargin: 70
-                        contentText.text: "Login"
-                        contentText.color: "#f56565"
-                        bgitem.color: "transparent"
-                        bgitem.border.width: 1
+//                        Layout.rightMargin: 70
+                        Layout.preferredWidth: 90
+                        texticon.text: "\ue804"
+                        texticon.visible: true
+                        contentText.text: "Search"
+                        contentText.color: "#FAFAFA"
+                        bgitem.color: "#f56565"
+                        bgitem.border.width: 0
                         bgitem.border.color: "#f56565"
                     }
                 }
             }
-            Rectangle {
-                id: toolbarseprator
-                anchors.top: toolbar.bottom
-                width: parent.width
-                height: 1.5
-                color: "#E0E0E0"
-            }
+
             Rectangle {
                 id: listviewbackground
-//                anchors.centerIn: parent
                 anchors.horizontalCenter: parent.horizontalCenter
                 y: toolbar.height + 50
                 width: parent.width / 1.2
@@ -118,6 +167,36 @@ ApplicationWindow {
                 radius: 10
                 border.width: 0.5
                 border.color: "#E0E0E0"
+                state: stackView.searchMode ? "search" : "normal"
+                states: [
+                    State {
+                        name: "search"
+                        PropertyChanges {
+                            target: listviewbackground
+                            y: toolbar.height + 100
+                            height: parent.height / 1.6
+                        }
+                    },
+                    State {
+                        name: "normal"
+                        PropertyChanges {
+                            target: listviewbackground
+                            y: toolbar.height + 50
+                            height: parent.height / 1.4
+                        }
+                    }
+                ]
+
+                transitions: [
+                    Transition {
+                        NumberAnimation {
+                            target: listviewbackground
+                            property: "y"
+                            duration: 100
+                        }
+                    }
+                ]
+
                 ListView {
                     id: listview
                     width: parent.width - 10
@@ -146,13 +225,52 @@ ApplicationWindow {
                                     Label {
                                         Layout.alignment: Qt.AlignVCenter
                                         text: index + 1
+                                        font.bold: Font.Bold
+                                        font.pixelSize: 15
+                                        color: "#212121"
                                     }
                                     Label {
+                                        id: voteicon
+                                        property bool voted: false
                                         Layout.alignment: Qt.AlignVCenter
                                         font.family: "fontello"
                                         font.pixelSize: 35
-                                        color: "green"
+                                        color: "#2E7D32"
                                         text: "\ue803"
+                                        state: voted ? "voted" : "not-voted"
+                                        states: [
+                                            State {
+                                                name: "voted"
+                                                PropertyChanges {
+                                                    target: voteicon
+                                                    rotation: 180
+                                                    color: "#f56565"
+                                                }
+                                            },
+                                            State {
+                                                name: "not-voted"
+                                                PropertyChanges {
+                                                    target: voteicon
+                                                    rotation: 0
+                                                    color: "#2E7D32"
+                                                }
+                                            }
+                                        ]
+                                        transitions: [
+                                            Transition {
+                                                ColorAnimation {
+                                                    duration: 200
+                                                }
+                                                RotationAnimation {
+                                                    duration: 200
+                                                }
+                                            }
+                                        ]
+                                        MouseArea {
+                                            anchors.fill: parent
+                                            onClicked: voteicon.voted = !voteicon.voted
+                                            cursorShape: Qt.PointingHandCursor
+                                        }
                                     }
 
                                     ColumnLayout {
@@ -164,6 +282,10 @@ ApplicationWindow {
                                             Label {
                                                 text: model.title
                                                 font.pixelSize: 20
+                                                MouseArea {
+                                                    anchors.fill: parent
+                                                    cursorShape: Qt.PointingHandCursor
+                                                }
                                             }
                                             Label {
                                                 text: "(" + model.url + ")"
@@ -188,6 +310,10 @@ ApplicationWindow {
                                                 font.pixelSize: 11
                                                 text: model.comment + " comments"
                                                 color: "#f56565"
+                                                MouseArea {
+                                                    anchors.fill: parent
+                                                    cursorShape: Qt.PointingHandCursor
+                                                }
                                             }
                                         }
                                     }
