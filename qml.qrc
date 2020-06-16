@@ -4,5 +4,6 @@
         <file>qtquickcontrols2.conf</file>
         <file>MyToolBar.qml</file>
         <file>MyButton.qml</file>
+        <file>font/fontello.ttf</file>
     </qresource>
 </RCC>

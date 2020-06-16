@@ -1,6 +1,6 @@
-import QtQuick 2.0
-import QtQuick.Controls 2.5
-import QtQuick.Layouts 1.3
+import QtQuick 2.15
+import QtQuick.Controls 2.15
+import QtQuick.Layouts 1.15
 
 Button {
     id: root
@@ -54,11 +54,6 @@ Button {
         MouseArea {
             id: __mousearea
             anchors.fill: parent
-           // hoverEnabled: true
-       //     preventStealing: true
-//            onEntered: {
-//                __background.opacity = 0.7
-//            }
 
             onExited: __background.opacity = 1
             onPressed: __background.opacity = 0.7

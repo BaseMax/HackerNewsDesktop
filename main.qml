@@ -8,7 +8,7 @@ ApplicationWindow {
     width: 1040
     height: 580
     title: qsTr("Stack")
-
+    FontLoader { source: "font/fontello.ttf" }
 
     StackView {
         id: stackView
@@ -27,9 +27,79 @@ ApplicationWindow {
                 color: "#f7fafc"
             }
 
-            MyToolBar {
+            Rectangle {
                 id: toolbar
-                barRow.anchors.leftMargin: 100
+                width: parent.width
+                height: 80
+                RowLayout {
+                    x: listviewbackground.x
+                    anchors.verticalCenter: parent.verticalCenter
+                    width: parent.width - 100
+                    height: parent.height
+                    RowLayout {
+                        id: appinfo
+                        Label {
+                            id: appicon
+                            font.family: "fontello"
+                            text: "\uf111"
+                            color: "#f56565"
+                            font.pixelSize: 15
+                        }
+                        Label {
+                            id: appname
+                            text: "Hacker News"
+                            font.pixelSize: 20
+                            font.bold: Font.Medium
+                        }
+                    }
+                    ListView {
+                        id: tabbar
+//                        Layout.alignment: Qt.AlignVCenter
+                        Layout.bottomMargin: 18
+                        Layout.leftMargin: 50
+//                        Layout.preferredWidth: toolbar.width
+                        Layout.fillWidth: true
+                        currentIndex: 0
+                        orientation: ListView.Horizontal
+                        interactive: false
+                        model: ["New", "Top", "Search", "Submit"]
+                        spacing: 10
+                        delegate: Item {
+                            width: 70
+                            height: 20
+                            RowLayout {
+//                            Layout.leftMargin: 40
+                                Label {
+                                    id: newicon
+                                    font.family: "fontello"
+                                    text: tabbar.currentIndex == index ? "\uf111" : "\uf10c"
+                                    color: "#f56565"
+                                }
+                                Label {
+                                    id: newtext
+                                    text: modelData
+                                    color: tabbar.currentIndex == index ? "#f56565" : "black"
+                                    MouseArea {
+                                        anchors.fill: parent
+                                        onClicked: {
+                                            tabbar.currentIndex = index
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    MyButton {
+//                        Layout.fillWidth: true
+//                        Layout.alignment: Qt.AlignRight
+                        Layout.rightMargin: 70
+                        contentText.text: "Login"
+                        contentText.color: "#f56565"
+                        bgitem.color: "transparent"
+                        bgitem.border.width: 1
+                        bgitem.border.color: "#f56565"
+                    }
+                }
             }
             Rectangle {
                 id: toolbarseprator
@@ -40,7 +110,9 @@ ApplicationWindow {
             }
             Rectangle {
                 id: listviewbackground
-                anchors.centerIn: parent
+//                anchors.centerIn: parent
+                anchors.horizontalCenter: parent.horizontalCenter
+                y: toolbar.height + 50
                 width: parent.width / 1.2
                 height: parent.height / 1.4
                 radius: 10
@@ -62,27 +134,61 @@ ApplicationWindow {
                             width: parent.width
                             height: parent.height
                             Rectangle {
-                                anchors.left: parent.left
-                                anchors.leftMargin: 10
+//                                anchors.left: parent.left
+//                                anchors.leftMargin: 10
+                                Layout.leftMargin: 10
                                 id: viewcontent
                                 Layout.fillWidth: true
                                 Layout.preferredHeight: 94
-                                ColumnLayout {
-                                    anchors.verticalCenter: parent.verticalCenter
-                                    RowLayout {
-                                        Label {
-                                            text: model.title
-                                        }
-                                        Label {
-                                            text: model.title
-                                        }
+                                RowLayout {
+                                    anchors.fill: parent
+                                    spacing: 0
+                                    Label {
+                                        Layout.alignment: Qt.AlignVCenter
+                                        text: index + 1
                                     }
-                                    RowLayout {
-                                        Label {
-                                            text: model.title
+                                    Label {
+                                        Layout.alignment: Qt.AlignVCenter
+                                        font.family: "fontello"
+                                        font.pixelSize: 35
+                                        color: "green"
+                                        text: "\ue803"
+                                    }
+
+                                    ColumnLayout {
+//                                        anchors.verticalCenter: parent.verticalCenter
+                                        Layout.alignment: Qt.AlignVCenter
+                                        Layout.leftMargin: -20
+                                        spacing: 0
+                                        RowLayout {
+                                            Label {
+                                                text: model.title
+                                                font.pixelSize: 20
+                                            }
+                                            Label {
+                                                text: "(" + model.url + ")"
+                                                font.pixelSize: 12
+                                            }
                                         }
-                                        Label {
-                                            text: model.title
+                                        RowLayout {
+                                            spacing: 2
+                                            Label {
+                                                font.pixelSize: 11
+                                                text: model.points + " pts"
+                                            }
+                                            Label {
+                                                font.pixelSize: 11
+                                                text: "by " + model.author
+                                            }
+                                            Label {
+                                                font.pixelSize: 11
+                                                text: model.date + " |"
+                                            }
+                                            Label {
+                                                font.pixelSize: 11
+                                                text: model.comment + " comments"
+                                                color: "#f56565"
+                                            }
                                         }
                                     }
                                 }
@@ -109,6 +215,7 @@ ApplicationWindow {
             comment: 3
             points: 5
             date: "1 day ago"
+            author: "SeedPuller"
         }
         ListElement {
             url: "https://alsdlasdasd"
@@ -116,6 +223,7 @@ ApplicationWindow {
             comment: 3
             points: 5
             date: "1 day ago"
+            author: "SeedPuller"
         }
         ListElement {
             url: "https://alsdlasdasd"
@@ -123,6 +231,7 @@ ApplicationWindow {
             comment: 3
             points: 5
             date: "1 day ago"
+            author: "SeedPuller"
         }
         ListElement {
             url: "https://alsdlasdasd"
@@ -130,6 +239,7 @@ ApplicationWindow {
             comment: 3
             points: 5
             date: "1 day ago"
+            author: "SeedPuller"
         }
         ListElement {
             url: "https://alsdlasdasd"
@@ -137,6 +247,8 @@ ApplicationWindow {
             comment: 3
             points: 5
             date: "1 day ago"
+            author: "SeedPuller"
         }
+
     }
 }
