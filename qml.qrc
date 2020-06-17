@@ -5,5 +5,9 @@
         <file>MyToolBar.qml</file>
         <file>MyButton.qml</file>
         <file>font/fontello.ttf</file>
+        <file>CommentPage.qml</file>
+        <file>MainPage.qml</file>
+        <file>LoginPage.qml</file>
+        <file>SubmitPage.qml</file>
     </qresource>
 </RCC>
