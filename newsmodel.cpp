@@ -4,7 +4,6 @@ NewsModel::NewsModel(QObject *parent)
     : QAbstractListModel(parent), loaded{false}, networkrequest(topstoriesapi),
       currentrequestnumber{0}, finalrequestnumber{2}
 {
-    postid = new int[finalrequestnumber]{0};
 
 //    connect(&networkrequest, SIGNAL(complete(QByteArray&)), this, SLOT(parsePostId(QByteArray&)));
     connect(&networkrequest, &Network::complete, this, &NewsModel::parsePostId);
@@ -15,10 +14,6 @@ NewsModel::NewsModel(QObject *parent)
 //    }
 }
 
-NewsModel::~NewsModel()
-{
-    delete [] postid;
-}
 
 int NewsModel::rowCount(const QModelIndex &parent) const
 {
@@ -97,7 +92,7 @@ QHash<int, QByteArray> NewsModel::roleNames() const
     return roles;
 }
 
-bool NewsModel::insert(const QString& author, const QString& url,
+bool NewsModel::insert(const int id, const QString& author, const QString& url,
                        const QString& title, const QString& date,
                        const int point, const int comment, const QModelIndex &parent)
 {
@@ -105,6 +100,7 @@ bool NewsModel::insert(const QString& author, const QString& url,
     beginInsertRows(parent, rowcount, rowcount);
 
     QVariantList temp;
+    temp.append(id);
     temp.append(author);
     temp.append(url);
     temp.append(title);
@@ -166,13 +162,11 @@ void NewsModel::parsePostInfo(const QByteArray &data)
     if (jsonobject["kids"] != QJsonValue()) {
         comments = jsonobject["kids"].toArray().size();
     }
-    temp.append(jsonobject["by"].toString());
-    temp.append(jsonobject["url"].toString());
-    temp.append(jsonobject["title"].toString());
-    temp.append(date.toString("dd MMM hh:mm"));
-    temp.append(comments);
-    temp.append(jsonobject["score"].toInt());
-    vlist.push_back(temp);
+
+    insert(jsonobject["id"].toInt(), jsonobject["by"].toString(),
+           jsonobject["url"].toString(),jsonobject["title"].toString(),
+           date.toString("dd MMM hh:mm"), comments, jsonobject["score"].toInt());
+
     checkRequestJobDone();
 }
 

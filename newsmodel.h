@@ -23,6 +23,7 @@ public:
      */
     enum {
         ROLE_START = Qt::UserRole + 1,
+        idRole,
         authorRole,
         urlRole,
         titleRole,
@@ -46,9 +47,10 @@ public:
 
     Qt::ItemFlags flags(const QModelIndex& index) const override;
     QHash<int, QByteArray> roleNames() const override;
-    bool insert(const QString& author, const QString& url,
-                const QString& title, const QString& date,
-                const int point, const int comment, const QModelIndex &parent = QModelIndex());
+    bool insert(const int id, const QString& author,
+                const QString& url, const QString& title,
+                const QString& date, const int point,
+                const int comment, const QModelIndex &parent = QModelIndex());
 
     bool getLoaded() const;
     void setLoaded(bool value);
@@ -70,14 +72,13 @@ private:
 
     QList<QVariantList> vlist;
     // list of columns
-    const QList<QByteArray> columns{"author", "url", "title", "date", "comment", "point"};
+    const QList<QByteArray> columns{"id", "author", "url", "title", "date", "comment", "point"};
     bool loaded;
     QUrl topstoriesapi{"https://hacker-news.firebaseio.com/v0/topstories.json"};
     QUrl postinfoapi{"https://hacker-news.firebaseio.com/v0/item/"};
     Network networkrequest;
     int currentrequestnumber;
     int finalrequestnumber;
-    int* postid;
 };
 
 #endif // NewsModel_H
