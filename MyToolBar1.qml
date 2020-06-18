@@ -3,7 +3,6 @@ import QtQuick.Controls 2.15
 import QtQuick.Layouts 1.15
 
 Rectangle {
-    id: toolbar
     width: parent.width
     height: 80
     RowLayout {
