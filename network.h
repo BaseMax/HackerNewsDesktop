@@ -25,6 +25,7 @@ public:
 //    QByteArray get();
 signals:
     void complete(const QByteArray& data);
+
 public slots:
     void finished(QNetworkReply* reply);
 
