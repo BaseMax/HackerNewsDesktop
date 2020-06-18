@@ -10,5 +10,6 @@
         <file>LoginPage.qml</file>
         <file>SubmitPage.qml</file>
         <file>MyToolBar1.qml</file>
+        <file>NewsDelegate.qml</file>
     </qresource>
 </RCC>
