@@ -2,15 +2,36 @@
 #define NETWORK_H
 
 #include <QObject>
+#include <QNetworkAccessManager>
+#include <QNetworkReply>
+#include <QNetworkRequest>
 
 class Network : public QObject
 {
     Q_OBJECT
 public:
     explicit Network(QObject *parent = nullptr);
+    explicit Network(QUrl url, QObject* parent = nullptr);
 
+    QHash<QByteArray, QByteArray> getHeaders() const;
+    void setHeaders(const QHash<QByteArray, QByteArray> &value);
+
+    QUrl getUrl() const;
+    void setUrl(const QUrl &value);
+
+    void addHeader(const QByteArray& header, const QByteArray& value);
+    bool post(const QByteArray& data);
+    bool get();
+//    QByteArray get();
 signals:
+    void complete(const QByteArray& data);
+public slots:
+    void finished(QNetworkReply* reply);
 
+private:
+    QUrl url;
+    QHash<QByteArray, QByteArray> headers;
+    QNetworkAccessManager netaccman;
 };
 
 #endif // NETWORK_H
