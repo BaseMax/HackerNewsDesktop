@@ -43,7 +43,7 @@ Page {
             onClicked: {
                 model1.insert(0, {url: urltext.text, title: titletext.text, comment: 0, points: 0, date: "now", author: "SeedPuller"})
                 stackView.pop()
-                tabbar.currentIndex = 0
+                toolbar.tbar.currentIndex = 0
             }
         }
     }
