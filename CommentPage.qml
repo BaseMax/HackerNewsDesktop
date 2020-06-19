@@ -3,20 +3,23 @@ import QtQuick.Controls 2.15
 import QtQuick.Layouts 1.15
 
 Page {
+    id: cmpage
     width: mainwindow.width
     height: mainwindow.height
-    ScrollView {
+
+    Flickable {
         y: toolbar.height + 50
         width: parent.width
-        height: parent.height - 200
-//                contentHeight: parent.height - 350
-//                ScrollBar.vertical: ScrollBar { }
-        ScrollBar.vertical.policy: ScrollBar.AlwaysOn
-        ScrollBar.vertical.interactive: true
-//                clip: true
+        height: parent.height - 135
+        contentWidth: parent.width
+        contentHeight: parent.height / 2
+        ScrollBar.vertical: ScrollBar { policy: ScrollBar.AlwaysOn; interactive: true }
+        ScrollBar.horizontal: ScrollBar { policy: ScrollBar.AlwaysOn; interactive: true }
+        bottomMargin: commentview.height
+        rightMargin: commentview.width
         Rectangle {
             id: postbackground
-            property var modelvalue: model1.get(stackView.index)
+            property var modelvalue: stackView.mainModel.get(stackView.index)
             x: 90
             width: parent.width / 1.3
             height: 110
@@ -26,8 +29,6 @@ Page {
             Label {
                 id: voteicon
                 property bool voted: false
-//                                    Layout.alignment: Qt.AlignVCenter
-//                                    Layout.preferredWidth: 30
                 anchors.left: parent.left
                 anchors.leftMargin: 15
                 anchors.verticalCenter: parent.verticalCenter
@@ -74,15 +75,10 @@ Page {
                 anchors.verticalCenter: parent.verticalCenter
                 anchors.left: voteicon.right
                 anchors.leftMargin: 15
-//                                        width: 100
-//                                    Layout.alignment: Qt.AlignVCenter
-//                                    Layout.leftMargin: -20
                 spacing: 0
                 RowLayout {
-//                                            Layout.fillWidth: true
-//                                            width: 100
                     Label {
-                        text: postbackground.modelvalue.title
+                        text: postbackground.modelvalue[3]
                         font.pixelSize: 20
                         MouseArea {
                             anchors.fill: parent
@@ -90,7 +86,7 @@ Page {
                         }
                     }
                     Label {
-                        text: "(" + postbackground.modelvalue.url + ")"
+                        text: "(" + postbackground.modelvalue[2] + ")"
                         font.pixelSize: 12
                     }
                 }
@@ -99,28 +95,21 @@ Page {
                     spacing: 2
                     Label {
                         font.pixelSize: 11
-                        text: postbackground.modelvalue.points + " pts"
+                        text: postbackground.modelvalue[6] + " pts"
                     }
                     Label {
                         font.pixelSize: 11
-                        text: "by " + postbackground.modelvalue.author
+                        text: "by " + postbackground.modelvalue[1]
                     }
                     Label {
                         font.pixelSize: 11
-                        text: postbackground.modelvalue.date
+                        text: postbackground.modelvalue[4]
                     }
-//                        Label {
-//                            font.pixelSize: 11
-//                            text: model.comment + " comments"
-//                            color: "#f56565"
-//                            MouseArea {
-//                                anchors.fill: parent
-//                                cursorShape: Qt.PointingHandCursor
-//                            }
-//                        }
                 }
             }
         }
+
+
         Rectangle {
             id: commentinput
             width: postbackground.width * 0.75
@@ -168,6 +157,7 @@ Page {
             bgitem.radius: 10
             onClicked: {
                 commentmodel.append({username: "SeedPuller", date: "Now", text: commenttext.text})
+                commenttext.text = ""
 //                        stackView.pop()
 //                        tabbar.currentIndex = 0
             }
@@ -178,15 +168,16 @@ Page {
             anchors.top: commentsubmitbtn.bottom
             anchors.left: postbackground.left
             anchors.topMargin: 15
-            width: postbackground.width * 0.5
-            height: parent.height
-
+            width: postbackground.width
+            height: count * 400
+            interactive: false
             spacing: 20
             model: commentmodel
-            clip: true
+//            clip: true
             delegate: Rectangle {
-                width: 350
+                width: commentview.width
                 implicitHeight: 50 + cmtext.height
+//                implicitWidth: 50 + cmtext.width
                 radius: 10
                 border.width: 0.8
                 border.color: "#E0E0E0"
