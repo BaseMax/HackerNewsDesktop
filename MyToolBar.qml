@@ -57,6 +57,7 @@ Rectangle {
                         font.family: "fontello"
                         text: tabbar.currentIndex == index ? "\uf111" : "\uf10c"
                         color: "#f56565"
+                        font.pixelSize: 11
                     }
                     Label {
                         id: newtext
