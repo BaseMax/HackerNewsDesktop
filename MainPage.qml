@@ -40,11 +40,13 @@ Page {
 
             MyButton {
 //                        Layout.rightMargin: 70
-                Layout.preferredWidth: 90
+                Layout.preferredWidth: 120
+                Layout.preferredHeight: 50
                 texticon.text: "\ue804"
                 texticon.visible: true
                 contentText.text: "Search"
                 contentText.color: "#FAFAFA"
+                contentText.font.bold: Font.Medium
                 bgitem.color: "#f56565"
                 bgitem.border.width: 0
                 bgitem.border.color: "#f56565"
