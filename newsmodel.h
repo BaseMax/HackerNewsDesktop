@@ -60,11 +60,15 @@ public slots:
     //    bool remove(int index, const QModelIndex &parent = QModelIndex());
 //    bool prepareAndInsert(QString filepath);
     QStringList getFileInfo(int index) const;
+    QStringList get(int index);
+
 private slots:
     void parsePostId(const QByteArray& datas);
     void parsePostInfo(const QByteArray& data);
+
 signals:
     void loadedChanged(const bool status);
+
 private:
     void checkRequestJobDone();
 

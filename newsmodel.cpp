@@ -139,6 +139,15 @@ QStringList NewsModel::getFileInfo(int index) const
     return fileinfo;
 }
 
+QStringList NewsModel::get(int index)
+{
+    QStringList list;
+    foreach (QVariant var, vlist[index]) {
+        list.append(var.toString());
+    }
+    return list;
+}
+
 void NewsModel::parsePostId(const QByteArray &datas)
 {
     disconnect(&networkrequest, &Network::complete, this, &NewsModel::parsePostId);
