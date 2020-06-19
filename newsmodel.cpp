@@ -2,7 +2,7 @@
 
 NewsModel::NewsModel(QObject *parent)
     : QAbstractListModel(parent), loaded{false}, networkrequest(topstoriesapi),
-      currentrequestnumber{0}, finalrequestnumber{2}
+      currentrequestnumber{0}, finalrequestnumber{5}
 {
 
 //    connect(&networkrequest, SIGNAL(complete(QByteArray&)), this, SLOT(parsePostId(QByteArray&)));
@@ -31,7 +31,7 @@ QVariant NewsModel::data(const QModelIndex &index, int role) const
         return QVariant();
 
     QVariantList temp = vlist.at(index.row());
-    const int column = (ROLE_START + 1) - role;
+    const int column = role - (ROLE_START + 1);
     switch (role) {
         case authorRole:
             return temp[column];
