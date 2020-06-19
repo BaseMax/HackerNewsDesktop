@@ -5,6 +5,7 @@ import QtQuick.Layouts 1.15
 Rectangle {
     width: parent.width
     height: 80
+    property alias tbar: tabbar
     RowLayout {
         x: 90
         anchors.verticalCenter: parent.verticalCenter
