@@ -1,6 +1,7 @@
 import QtQuick 2.15
 import QtQuick.Controls 2.15
 import QtQuick.Layouts 1.15
+import API.LoginHandler 0.1
 
 ApplicationWindow {
     id: mainwindow
@@ -15,12 +16,12 @@ ApplicationWindow {
         property bool searchMode: false
         property bool tabBarNeeded: true
         property real index
-        property bool isLogin: false
-        initialItem: commentpage
+        property bool loginFailed: false
+        initialItem: mainpage
         anchors.fill: parent
     }
 
-    MyToolBar1 { id: toolbar }
+    MyToolBar { id: toolbar }
 
     Rectangle {
         id: toolbarseprator
@@ -51,57 +52,56 @@ ApplicationWindow {
     }
 
     ListModel {
-        id: model1
-        ListElement {
-            url: "https://alsdlasdasd"
-            title: "this is the news title"
-            comment: 3
-            points: 5
-            date: "1 day ago"
-            author: "SeedPuller"
-        }
-        ListElement {
-            url: "https://alsdlasdasd"
-            title: "this is the news title"
-            comment: 3
-            points: 5
-            date: "1 day ago"
-            author: "SeedPuller"
-        }
-        ListElement {
-            url: "https://alsdlasdasd"
-            title: "this is the news title"
-            comment: 3
-            points: 5
-            date: "1 day ago"
-            author: "SeedPuller"
-        }
-        ListElement {
-            url: "https://alsdlasdasd"
-            title: "this is the news title"
-            comment: 3
-            points: 5
-            date: "1 day ago"
-            author: "SeedPuller"
-        }
-        ListElement {
-            url: "https://alsdlasdasd"
-            title: "this is the news title"
-            comment: 3
-            points: 5
-            date: "1 day ago"
-            author: "SeedPuller"
-        }
-
-    }
-    ListModel {
         id: commentmodel
         ListElement {
             username: "SeedPuller"
             date: "1 Day ago"
             text: "Hello this is my comment\nasdasdadnasdasda\dnasdasdasd\nasdasdasdas\nasdasd"
         }
+    }
 
+    LoginHandler {
+        id: loginhandler
+        property bool loginattempt: false
+        property bool signout: false
+        onLoginChanged: {
+            if (login) {
+                stackView.pop()
+                stackView.tabBarNeeded = true
+                loginhandler.loginattempt = false
+                return
+            }
+            if (!loginhandler.signout) {
+                stackView.loginFailed = true
+            }
+            loginhandler.loginattempt = false
+        }
+    }
 
+    Item {
+        id: loading
+        visible: loginhandler.loginattempt
+        anchors.fill: parent
+        Rectangle {
+            anchors.fill: parent
+            opacity: 0.6
+            color: "#212121"
+        }
+        Label {
+            id: loadingchar
+            anchors.centerIn: parent
+            font.family: "fontello"
+            font.pixelSize: 60
+            color: "#f56565"
+            text: "\ue834"
+        }
+        RotationAnimation {
+            running: true
+            target: loadingchar
+            from: 0
+            to: 360
+            duration: 2000
+            loops: Animation.Infinite
+        }
     }
 }

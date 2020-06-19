@@ -25,6 +25,7 @@ Page {
             text: "Email"
         }
         TextField {
+            id: emailtext
             Layout.fillWidth: true
             placeholderText: "Enter your Email"
         }
@@ -32,8 +33,10 @@ Page {
             text: "Password"
         }
         TextField {
+            id: passwordtext
             Layout.fillWidth: true
             placeholderText: "Enter your Password"
+            echoMode: TextField.Password
         }
         RowLayout {
             Layout.fillWidth: true
@@ -51,6 +54,7 @@ Page {
                 }
             }
         }
+
         MyButton {
             Layout.fillWidth: true
             Layout.preferredHeight: 50
@@ -63,7 +67,63 @@ Page {
             bgitem.color: "#f56565"
             bgitem.border.width: 0
             bgitem.border.color: "#f56565"
+            onClicked: {
+                if (logpage.signup) {
+                    loginhandler.trySingUp(emailtext.text, passwordtext.text)
+                    loginhandler.loginattempt = true
+                    return
+                }
+                loginhandler.tryLogin(emailtext.text, passwordtext.text)
+                loginhandler.loginattempt = true
+                return
+            }
         }
     }
 
+    Rectangle {
+        id: loginfail
+        anchors.left: parent.left
+        anchors.leftMargin: 20
+        y: parent.height
+        width: 150
+        height: 60
+        radius: 10
+        border.width: 1
+        border.color: "#f56565"
+        Label {
+            anchors.centerIn: parent
+            text: "Login Failed!"
+            color: "#f56565"
+            font.bold: Font.Medium
+            font.pixelSize: 15
+        }
+        state: stackView.loginFailed ? "visible" : "not-visible"
+        states: [
+            State {
+                name: "visible"
+                PropertyChanges {
+                    target: loginfail
+                    y: logpage.height - 100
+                }
+            },
+            State {
+                name: "not-visible"
+                PropertyChanges {
+                    target: loginfail
+                    y: logpage.height
+                }
+            }
+        ]
+
+        transitions: [
+            Transition {
+                NumberAnimation {
+                    target: loginfail
+                    property: "y"
+                    duration: 200
+                    easing.type: Easing.InOutQuad
+                }
+            }
+        ]
+    }
 }
