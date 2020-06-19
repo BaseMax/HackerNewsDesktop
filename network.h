@@ -35,7 +35,8 @@ private:
     QNetworkAccessManager netaccman;
 
     QList<QByteArray> byteheaders;
-    void updateByteHeader();
+
+    void setRequestHeader(QNetworkRequest& req);
 };
 
 #endif // NETWORK_H
