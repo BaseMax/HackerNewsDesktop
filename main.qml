@@ -2,6 +2,7 @@ import QtQuick 2.15
 import QtQuick.Controls 2.15
 import QtQuick.Layouts 1.15
 import API.LoginHandler 0.1
+import API.NewsModel 0.1
 
 ApplicationWindow {
     id: mainwindow
@@ -17,6 +18,7 @@ ApplicationWindow {
         property bool tabBarNeeded: true
         property real index
         property bool loginFailed: false
+        property var mainModel: stackView.searchMode ? searchmodel : newsmodel
         initialItem: mainpage
         anchors.fill: parent
     }
@@ -60,6 +62,15 @@ ApplicationWindow {
         }
     }
 
+    NewsModel {
+        id: newsmodel
+        loaded: false
+    }
+
+    NewsModel {
+        id: searchmodel
+        loaded: false
+    }
     LoginHandler {
         id: loginhandler
         property bool loginattempt: false

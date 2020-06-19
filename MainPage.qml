@@ -1,7 +1,6 @@
 import QtQuick 2.0
 import QtQuick.Controls 2.15
 import QtQuick.Layouts 1.15
-import API.NewsModel 0.1
 
 Page {
     width: mainwindow.width
@@ -93,26 +92,18 @@ Page {
         ]
 
         ListView {
-            property var n_model: stackView.searchMode ? searchmodel : newsmodel
             id: listview
             width: parent.width - 10
             height: parent.height - 10
             anchors.centerIn: parent
-            model: n_model.loaded ? n_model : 5
+            model: stackView.mainModel.loaded ? stackView.mainModel : 5
             clip: true
             delegate: listview.model.loaded ? newsdelegate : loadingdelegate
 //            delegate: LoadingDelegate { }
         }
 
     }
-    NewsModel {
-        id: newsmodel
-        loaded: false
-    }
-    NewsModel {
-        id: searchmodel
-        loaded: false
-    }
+
     Component {
         id: newsdelegate
         NewsDelegate { }
