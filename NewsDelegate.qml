@@ -104,7 +104,7 @@ Item {
                     spacing: 2
                     Label {
                         font.pixelSize: 11
-                        text: model.points + " pts"
+                        text: model.point + " pts"
                     }
                     Label {
                         font.pixelSize: 11
@@ -122,7 +122,7 @@ Item {
                             anchors.fill: parent
                             cursorShape: Qt.PointingHandCursor
                             onClicked: {
-                                tabbar.currentIndex = -1
+                                toolbar.tbar.currentIndex = -1
                                 stackView.index = index
                                 stackView.push(commentpage)
                             }
