@@ -33,6 +33,9 @@ private:
     QUrl url;
     QHash<QByteArray, QByteArray> headers;
     QNetworkAccessManager netaccman;
+
+    QList<QByteArray> byteheaders;
+    void updateByteHeader();
 };
 
 #endif // NETWORK_H
