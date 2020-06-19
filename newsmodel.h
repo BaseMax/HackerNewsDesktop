@@ -36,7 +36,6 @@ public:
     Q_PROPERTY(bool loaded READ getLoaded WRITE setLoaded NOTIFY loadedChanged);
 
     explicit NewsModel(QObject *parent = nullptr);
-    ~NewsModel();
     // return number of data's
     int rowCount(const QModelIndex &parent = QModelIndex()) const override;
     // return data by role and index
