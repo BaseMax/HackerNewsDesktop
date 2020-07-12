@@ -14,7 +14,6 @@ LoginHandler::LoginHandler(QObject *parent) : QObject(parent), login{false}
 //    headers["TE"] = "Trailers";
 //    headers["Connection"] = "keep-alive";
 //    networkrequest.setHeaders(headers);
-
 }
 
 bool LoginHandler::isLogin() const
