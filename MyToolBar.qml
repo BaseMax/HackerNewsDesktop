@@ -79,6 +79,12 @@ Rectangle {
                                     stackView.pop()
                                 }
                                 if (index == 3) {
+                                    if (!loginhandler.login) {
+                                        stackView.tabBarNeeded = false
+                                        stackView.push(loginpage)
+                                        return;
+                                    }
+
                                     stackView.push(submitpage)
                                 }
 
