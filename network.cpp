@@ -38,7 +38,6 @@ void Network::addHeader(const QByteArray &header, const QByteArray &value)
 
 bool Network::post(const QByteArray& data)
 {
-    qDebug() << data;
     QNetworkRequest request(this->url);
     setRequestHeader(request);
     QNetworkReply *reply = netaccman.post(request, data);
