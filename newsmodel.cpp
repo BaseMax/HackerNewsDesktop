@@ -2,7 +2,7 @@
 
 NewsModel::NewsModel(QObject *parent)
     : QAbstractListModel(parent), loaded{false}, networkrequest(topstoriesapi),
-      currentrequestnumber{0}, finalrequestnumber{5}
+      currentrequestnumber{0}, finalrequestnumber{10}
 {
 
 //    connect(&networkrequest, SIGNAL(complete(QByteArray&)), this, SLOT(parsePostId(QByteArray&)));
