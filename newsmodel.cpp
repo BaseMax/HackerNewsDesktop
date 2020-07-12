@@ -155,6 +155,9 @@ void NewsModel::parsePostId(const QByteArray &datas)
     QJsonDocument jsonresponse = QJsonDocument::fromJson(datas);
     QJsonArray jsonobject = jsonresponse.array();
     for (int i{0}; i < finalrequestnumber; ++i) {
+        if (jsonobject == QJsonArray()) {
+            continue;
+        }
         getPostInfo(jsonobject[i].toInt());
     }
 }
