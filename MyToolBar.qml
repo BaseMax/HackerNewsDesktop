@@ -1,6 +1,8 @@
 import QtQuick 2.0
 import QtQuick.Controls 2.15
 import QtQuick.Layouts 1.15
+// this toolbar is not efficient even a bit.
+// and this whole toolbar(and operations related to) must change.
 
 Rectangle {
     width: parent.width
@@ -57,7 +59,7 @@ Rectangle {
                         font.family: "fontello"
                         text: tabbar.currentIndex == index ? "\uf111" : "\uf10c"
                         color: "#f56565"
-                        font.pixelSize: 11
+                        font.pixelSize: 9
                     }
                     Label {
                         id: newtext
