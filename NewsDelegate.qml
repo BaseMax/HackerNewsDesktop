@@ -108,12 +108,12 @@ Item {
                     }
                     Label {
                         font.pixelSize: 11
-                        text: "by " + model.author
+                        text: "by " + model.author + " |"
                     }
-                    Label {
-                        font.pixelSize: 11
-                        text: model.date + " |"
-                    }
+//                    Label {
+//                        font.pixelSize: 11
+//                        text: model.date + " |"
+//                    }
                     Label {
                         font.pixelSize: 11
                         text: model.comment + " comments"
@@ -129,6 +129,14 @@ Item {
                         }
                     }
                 }
+            }
+            Label {
+                anchors.right: parent.right
+                anchors.rightMargin: 10
+                anchors.bottom: parent.bottom
+                anchors.bottomMargin: 10
+                font.pixelSize: 11
+                text: model.date
             }
         }
 
