@@ -2,6 +2,9 @@ import QtQuick 2.0
 import QtQuick.Controls 2.15
 import QtQuick.Layouts 1.15
 
+import QtQuick.Controls 1.4 as QQC1
+import API.CommentType 0.1
+
 Page {
     id: cmpage
     width: mainwindow.width
@@ -19,7 +22,7 @@ Page {
         rightMargin: commentview.width
         Rectangle {
             id: postbackground
-            property var modelvalue: stackView.mainModel.get(stackView.index)
+//            property var modelvalue: stackView.mainModel.get(stackView.index)
             x: 90
             width: parent.width / 1.3
             height: 110
@@ -163,73 +166,97 @@ Page {
             }
         }
 
-        ListView {
-            id: commentview
-            anchors.top: commentsubmitbtn.bottom
-            anchors.left: postbackground.left
-            anchors.topMargin: 15
-            width: postbackground.width
-            height: count * 400
-            interactive: false
-            spacing: 20
-            model: commentmodel
-//            clip: true
-            delegate: Rectangle {
-                width: commentview.width
-                implicitHeight: 50 + cmtext.height
-//                implicitWidth: 50 + cmtext.width
-                radius: 10
-                border.width: 0.8
-                border.color: "#E0E0E0"
+        QQC1.TreeView {
+//            anchors.fill: parent
+            width: 400
+            height: 400
+            model: theModel
+            itemDelegate: Item {
                 Rectangle {
-                    anchors.left: parent.left
-                    anchors.leftMargin: 1
-                    anchors.verticalCenter: parent.verticalCenter
-                    height: parent.height - 15
-                    width: 2
-                    color: "#f56565"
+                    anchors.fill: parent
+                    color: "grey"
                 }
-                RowLayout {
-                    id: commentinfo
-                    anchors.left: parent.left
-                    anchors.leftMargin: 20
-                    anchors.top: parent.top
-                    anchors.topMargin: 5
-                    width: parent.width - 40
-                    Label {
-                        text: model.username
-                        font.bold: Font.Medium
-                    }
-                    Label {
-                        Layout.rightMargin: 110
-                        text: model.date
-                        color: "#718096"
-                        font.pixelSize: 10
-                    }
-                    Label {
-                        Layout.alignment: Qt.AlignRight
-                        font.family: "fontello"
-                        font.pixelSize: 15
-                        text: "\ue800"
-                        color: "red"
-                        MouseArea {
-                            anchors.fill: parent
-                            cursorShape: Qt.PointingHandCursor
-                            onClicked: commentmodel.remove(index)
-                        }
-                    }
-                }
+
                 Text {
-                    id: cmtext
-                    anchors.top: commentinfo.bottom
-                    anchors.topMargin: 15
-                    anchors.left: parent.left
-                    anchors.leftMargin: 15
-                    width: parent.width - 50
-                    text: model.text
-                    wrapMode: Text.Wrap
+                    anchors.fill: parent
+                    color: styleData.textColor
+                    elide: styleData.elideMode
+                    text: styleData.value.author
                 }
             }
+
+            QQC1.TableViewColumn {
+                role: "comment"
+//                title: "Comment"
+            }
         }
+//        ListView {
+//            id: commentview
+//            anchors.top: commentsubmitbtn.bottom
+//            anchors.left: postbackground.left
+//            anchors.topMargin: 15
+//            width: postbackground.width
+//            height: count * 400
+//            interactive: false
+//            spacing: 20
+//            model: commentmodel
+////            clip: true
+//            delegate: Rectangle {
+//                width: commentview.width
+//                implicitHeight: 50 + cmtext.height
+////                implicitWidth: 50 + cmtext.width
+//                radius: 10
+//                border.width: 0.8
+//                border.color: "#E0E0E0"
+//                Rectangle {
+//                    anchors.left: parent.left
+//                    anchors.leftMargin: 1
+//                    anchors.verticalCenter: parent.verticalCenter
+//                    height: parent.height - 15
+//                    width: 2
+//                    color: "#f56565"
+//                }
+//                RowLayout {
+//                    id: commentinfo
+//                    anchors.left: parent.left
+//                    anchors.leftMargin: 20
+//                    anchors.top: parent.top
+//                    anchors.topMargin: 5
+//                    width: parent.width - 40
+//                    Label {
+//                        text: model.username
+//                        font.bold: Font.Medium
+//                    }
+//                    Label {
+//                        Layout.rightMargin: 110
+//                        text: model.date
+//                        color: "#718096"
+//                        font.pixelSize: 10
+//                    }
+//                    Label {
+//                        Layout.alignment: Qt.AlignRight
+//                        font.family: "fontello"
+//                        font.pixelSize: 15
+//                        text: "\ue800"
+//                        color: "red"
+//                        MouseArea {
+//                            anchors.fill: parent
+//                            cursorShape: Qt.PointingHandCursor
+//                            onClicked: commentmodel.remove(index)
+//                        }
+//                    }
+//                }
+//                Text {
+//                    id: cmtext
+//                    anchors.top: commentinfo.bottom
+//                    anchors.topMargin: 15
+//                    anchors.left: parent.left
+//                    anchors.leftMargin: 15
+//                    width: parent.width - 50
+//                    text: model.text
+//                    wrapMode: Text.Wrap
+//                }
+//            }
+//        }
     }
 }
