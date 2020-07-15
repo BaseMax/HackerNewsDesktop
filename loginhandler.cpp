@@ -80,6 +80,20 @@ void LoginHandler::parseSignUp(const QByteArray& data)
     setLogin(false);
 }
 
+QString LoginHandler::getUsername() const
+{
+    return username;
+}
+
+void LoginHandler::setUsername(const QString &value)
+{
+    if (value == username) {
+        return;
+    }
+    username = value;
+    emit usernameChanged();
+}
+
 void LoginHandler::signOut()
 {
     setLogin(false);

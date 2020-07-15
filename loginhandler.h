@@ -12,11 +12,15 @@ class LoginHandler : public QObject
     Q_OBJECT
 public:
     Q_PROPERTY(bool login READ isLogin WRITE setLogin NOTIFY loginChanged)
+    Q_PROPERTY(QString username READ getUsername WRITE setUsername NOTIFY usernameChanged)
 
     explicit LoginHandler(QObject *parent = nullptr);
 
     bool isLogin() const;
     void setLogin(bool value);
+
+    QString getUsername() const;
+    void setUsername(const QString &value);
 
 public slots:
     bool tryLogin(const QString email, const QString password);
@@ -30,6 +34,7 @@ private slots:
 
 signals:
     void loginChanged(bool);
+    void usernameChanged();
 
 private:
     bool login;
