@@ -1,0 +1,44 @@
+#ifndef COMMENTTYPE_H
+#define COMMENTTYPE_H
+
+#include <QObject>
+#include <vector>
+
+class CommentType
+{
+    Q_OBJECT
+public:
+    Q_PROPERTY(int id READ getId WRITE setId)
+    Q_PROPERTY(int parent READ getParent WRITE setParent)
+    Q_PROPERTY(QString author READ getAuthor WRITE setAuthor)
+    Q_PROPERTY(QString date READ getDate WRITE setDate)
+    Q_PROPERTY(QString text READ getText WRITE setText)
+
+    CommentType(int id, int parent, const QString& author,
+                const QString& date, const QString& text, const std::vector<int>& childs );
+
+    int getId() const;
+    void setId(int value);
+
+    int getParent() const;
+    void setParent(int value);
+
+    QString getAuthor() const;
+    void setAuthor(const QString &value);
+
+    QString getDate() const;
+    void setDate(const QString &value);
+
+    QString getText() const;
+    void setText(const QString &value);
+
+    std::vector<int> getChilds() const;
+    void setChilds(const std::vector<int> &value);
+
+private:
+    int id, parent;
+    QString author, date, text;
+    std::vector<int> childs;
+};
+
+#endif // COMMENTTYPE_H
