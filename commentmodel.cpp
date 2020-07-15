@@ -1,26 +1,30 @@
-#include "newsmodel.h"
+#include "commentmodel.h"
 
-NewsModel::NewsModel(QObject *parent)
-    : QAbstractListModel(parent), loaded{false}, networkrequest(topstoriesapi),
-      currentrequestnumber{0}, finalrequestnumber{2}
+CommentModel::CommentModel(QObject *parent)
+    : QAbstractListModel(parent), loaded{false},
+      currentrequestnumber{0}, finalrequestnumber{0}
 {
-    postid = new int[finalrequestnumber]{0};
-
-//    connect(&networkrequest, SIGNAL(complete(QByteArray&)), this, SLOT(parsePostId(QByteArray&)));
-    connect(&networkrequest, &Network::complete, this, &NewsModel::parsePostId);
-    networkrequest.get();
-//    for (int i{0}; i < finalrequestnumber; ++i) {
-//        networkrequest.setUrl(QUrl(postinfoapi.toString() + postid[i] + ".json"));
-//        networkrequest.get();
-//    }
+//    connect(&networkrequest, &Network::complete, this, &CommentModel::parseCommentInfo);
+//    networkrequest.get();
+    QVariantList a;
+    a << 1 << "SeedPuller" << "1 Day Ago" << "This is my text" << 0 << 0 << 1;
+    QVariantList d;
+    d << 2 << "SeedPuller" << "1 Day Ago" << "This is my text" << 0 << 0 << 0;
+    QVariantList c;
+    c << 3 << "SeedPuller" << "1 Day Ago" << "This is my text" << 0 << 0 << 0;
+    QVariantList b;
+    b << 4 << "SomeLongeUsername" << "1 Day Ago" << "This is my text" << 0 << 0 << 0;
+    QVariantList f;
+    f << 5 << "SeedPuller" << "1 Day Ago" << "This is my text reply" << 1 << 20 << 0;
+    vlist.append(a);
+    vlist.append(b);
+    vlist.append(c);
+    vlist.append(d);
+//    vlist.append(f);
 }
 
-NewsModel::~NewsModel()
-{
-    delete [] postid;
-}
 
-int NewsModel::rowCount(const QModelIndex &parent) const
+int CommentModel::rowCount(const QModelIndex &parent) const
 {
     // For list models only the root node (an invalid parent) should return the list's size. For all
     // other (valid) parents, rowCount() should return 0 so that it does not become a tree model.
@@ -30,29 +34,14 @@ int NewsModel::rowCount(const QModelIndex &parent) const
     return vlist.size();
 }
 
-QVariant NewsModel::data(const QModelIndex &index, int role) const
+QVariant CommentModel::data(const QModelIndex &index, int role) const
 {
-    if (!index.isValid() || vlist.size() <= 0)
+    if (!index.isValid() || vlist.size() <= 0 || role <= ROLE_START || role >= ROLE_END)
         return QVariant();
 
     QVariantList temp = vlist.at(index.row());
-    const int column = (ROLE_START + 1) - role;
-    switch (role) {
-        case authorRole:
-            return temp[column];
-        case urlRole:
-            return temp[column];
-        case titleRole:
-            return temp[column];
-        case dateRole:
-            return temp[column];
-        case commentRole:
-            return temp[column];
-        case pointRole:
-            return temp[column];
-
-    }
-    return QVariant();
+    const int column = role - (ROLE_START + 1);
+    return temp[column];
 }
 
 
@@ -79,7 +68,7 @@ QVariant NewsModel::data(const QModelIndex &index, int role) const
 //    return false;
 //}
 
-Qt::ItemFlags NewsModel::flags(const QModelIndex &index) const
+Qt::ItemFlags CommentModel::flags(const QModelIndex &index) const
 {
     if (!index.isValid())
         return Qt::NoItemFlags;
@@ -87,7 +76,7 @@ Qt::ItemFlags NewsModel::flags(const QModelIndex &index) const
     return Qt::ItemIsEditable;
 }
 
-QHash<int, QByteArray> NewsModel::roleNames() const
+QHash<int, QByteArray> CommentModel::roleNames() const
 {
     QHash<int, QByteArray> roles;
     int column_number{0};
@@ -97,93 +86,102 @@ QHash<int, QByteArray> NewsModel::roleNames() const
     return roles;
 }
 
-bool NewsModel::insert(const QString& author, const QString& url,
-                       const QString& title, const QString& date,
-                       const int point, const int comment, const QModelIndex &parent)
+bool CommentModel::insert(const int id, const QString& author,
+                          const QString& date, const QString& text,
+                          const int cmparent)
 {
     int rowcount = rowCount();
-    beginInsertRows(parent, rowcount, rowcount);
+    beginInsertRows(QModelIndex(), rowcount, rowcount);
 
     QVariantList temp;
+    temp.append(id);
     temp.append(author);
-    temp.append(url);
-    temp.append(title);
+    temp.append(text);
     temp.append(date);
-    temp.append(point);
-    temp.append(comment);
+    temp.append(cmparent);
     vlist.push_back(temp);
     endInsertRows();
     return true;
 }
 
-//bool NewsModel::prepareAndInsert(QString filepath)
+bool CommentModel::insert(int position, int count, const QVariantList &data)
+{
+    return true;
+}
+
+//void CommentModel::parseCommentInfo(const QByteArray &datas)
 //{
-//    filepath.replace("file://", "");
-//    QFileInfo info(filepath);
-//    QStringList postfix{" B", " KB", " MB", " GB", " TB"};
-//    qint64 size{info.size()};
-//    if (size == 0) {
-//        return false;
+//    disconnect(&networkrequest, &Network::complete, this, &CommentModel::parseCommentInfo);
+//    connect(&networkrequest, &Network::complete, this, &CommentModel::parsePostInfo);
+//    QJsonDocument jsonresponse = QJsonDocument::fromJson(datas);
+//    QJsonArray jsonobject = jsonresponse.array();
+//    for (int i{0}; i < finalrequestnumber; ++i) {
+//        getPostInfo(jsonobject[i].toInt());
 //    }
-//    size_t i{0};
-//    for (; i <= 4; ++i) {
-//        if (size > 1024) {
-//            size /= 1024;
-//        }else {
-//            break;
-//        }
-//    }
-//    insert(info.fileName(), QString(QString::number(size) + postfix[i]), info.completeSuffix(), filepath);
-//    return true;
 //}
 
-QStringList NewsModel::getFileInfo(int index) const
-{
-    QStringList fileinfo{vlist[index][3].toString(), vlist[index][0].toString()};
-    return fileinfo;
-}
-
-void NewsModel::parsePostId(const QByteArray &datas)
-{
-    disconnect(&networkrequest, &Network::complete, this, &NewsModel::parsePostId);
-    connect(&networkrequest, &Network::complete, this, &NewsModel::parsePostInfo);
-    QJsonDocument jsonresponse = QJsonDocument::fromJson(datas);
-    QJsonArray jsonobject = jsonresponse.array();
-    for (int i{0}; i < finalrequestnumber; ++i) {
-        getPostInfo(jsonobject[i].toInt());
-    }
-}
-
-
-void NewsModel::parsePostInfo(const QByteArray &data)
+void CommentModel::parseCommentInfo(const QByteArray &data)
 {
     QJsonDocument jsonresponse = QJsonDocument::fromJson(data);
     QJsonObject jsonobject = jsonresponse.object();
     QVariantList temp;
-    int comments{0};
+    int parent{0};
+    const int id{jsonobject["id"].toInt()};
     QDateTime date;
     date.setSecsSinceEpoch(jsonobject["time"].toInt());
-    if (jsonobject["kids"] != QJsonValue()) {
-        comments = jsonobject["kids"].toArray().size();
+
+    if (jsonobject["parent"].toInt() != postid) {
+        parent = jsonobject["parent"].toInt();
+    }else {
+
     }
-    temp.append(jsonobject["by"].toString());
-    temp.append(jsonobject["url"].toString());
-    temp.append(jsonobject["title"].toString());
-    temp.append(date.toString("dd MMM hh:mm"));
-    temp.append(comments);
-    temp.append(jsonobject["score"].toInt());
-    vlist.push_back(temp);
+
+    if (jsonobject["kids"] != QJsonValue()) {
+        QJsonArray kids = jsonobject["kids"].toArray();
+        foreach (QJsonValue child, kids) {
+            getCommentInfo(id);
+        }
+    }
+
+//    temp.append(jsonobject["by"].toString());
+//    temp.append(jsonobject["url"].toString());
+//    temp.append(jsonobject["title"].toString());
+//    temp.append(date.toString("dd MMM hh:mm"));
+//    temp.append(comments);
+//    temp.append(jsonobject["score"].toInt());
+//    vlist.push_back(temp);
+    insert(id, jsonobject["by"].toString(), date.toString("dd MMM hh:mm"),
+            jsonobject["text"].toString(), parent);
+
     checkRequestJobDone();
 }
 
-void NewsModel::checkRequestJobDone()
+void CommentModel::getCommentInfo(int id)
+{
+    ++finalrequestnumber;
+    networkrequest.setUrl(QUrl(commentinfoapi.toString() + QString::number(id) + ".json"));
+    networkrequest.get();
+}
+
+void CommentModel::checkRequestJobDone()
 {
     if (currentrequestnumber == finalrequestnumber - 1) {
+        finalrequestnumber = 0;
         currentrequestnumber = 0;
         setLoaded(true);
         return;
     }
     ++currentrequestnumber;
+}
+
+int CommentModel::getPostid() const
+{
+    return postid;
+}
+
+void CommentModel::setPostid(int value)
+{
+    postid = value;
 }
 
 
@@ -199,12 +197,12 @@ void NewsModel::checkRequestJobDone()
 //}
 
 
-bool NewsModel::getLoaded() const
+bool CommentModel::getLoaded() const
 {
     return loaded;
 }
 
-void NewsModel::setLoaded(bool value)
+void CommentModel::setLoaded(bool value)
 {
     if (loaded == value) {
         return;
@@ -213,10 +211,10 @@ void NewsModel::setLoaded(bool value)
     emit loadedChanged(value);
 }
 
-void NewsModel::getPostInfo(int id)
+void CommentModel::getCommentInfo()
 {
 //    qDebug() << "entered id to getPostInfo is: " << id;
 //    qDebug() << "sending request to : " << postinfoapi.toString() + QString::number(id) + ".json";
-    networkrequest.setUrl(QUrl(postinfoapi.toString() + QString::number(id) + ".json"));
+    networkrequest.setUrl(QUrl(commentinfoapi.toString() + QString::number(postid) + ".json"));
     networkrequest.get();
 }
