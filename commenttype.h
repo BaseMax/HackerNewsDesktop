@@ -10,12 +10,13 @@ class CommentType
 public:
     Q_PROPERTY(int id READ getId WRITE setId)
     Q_PROPERTY(int parent READ getParent WRITE setParent)
+    Q_PROPERTY(int indent READ getIndent WRITE setIndent)
     Q_PROPERTY(QString author READ getAuthor WRITE setAuthor)
     Q_PROPERTY(QString date READ getDate WRITE setDate)
     Q_PROPERTY(QString text READ getText WRITE setText)
 
-    CommentType(int id, int parent, const QString& author,
-                const QString& date, const QString& text, const std::vector<int>& childs );
+    CommentType(int id, int parent, int indent,
+                const QString& author, const QString& date, const QString& text, const std::vector<int>& childs );
 
     int getId() const;
     void setId(int value);
@@ -35,8 +36,11 @@ public:
     std::vector<int> getChilds() const;
     void setChilds(const std::vector<int> &value);
 
+    int getIndent() const;
+    void setIndent(int value);
+
 private:
-    int id, parent;
+    int id, parent, indent;
     QString author, date, text;
     std::vector<int> childs;
 };

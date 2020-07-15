@@ -1,7 +1,9 @@
 #include "commenttype.h"
 
-CommentType::CommentType(int id, int parent, const QString &author, const QString &date, const QString &text, const std::vector<int> &childs)
-    : id{id}, parent{parent}, author(author), date(date), text(text), childs(childs)
+CommentType::CommentType(int id, int parent, int indent,
+                         const QString &author, const QString &date,
+                         const QString &text, const std::vector<int> &childs)
+    : id{id}, parent{parent}, indent(indent), author(author), date(date), text(text), childs(childs)
 {
 
 }
@@ -64,4 +66,14 @@ std::vector<int> CommentType::getChilds() const
 void CommentType::setChilds(const std::vector<int> &value)
 {
     childs = value;
+}
+
+int CommentType::getIndent() const
+{
+    return indent;
+}
+
+void CommentType::setIndent(int value)
+{
+    indent = value;
 }
