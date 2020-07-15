@@ -1,5 +1,5 @@
-#ifndef NewsModel_H
-#define NewsModel_H
+#ifndef CommentModel_H
+#define CommentModel_H
 
 #include <QAbstractListModel>
 #include <QJsonObject>
@@ -7,13 +7,11 @@
 #include <QJsonArray>
 #include <QDateTime>
 #include "network.h"
-
-//#define DB_HOSTNAME    "localhost"
-//#define DB_NAME        "modeldb.db"
-//#define DB_TABLE       "debtors"
+#include "commenttype.h"
 
 
-class NewsModel : public QAbstractListModel
+
+class CommentModel : public QAbstractListModel
 {
     Q_OBJECT
 
@@ -23,19 +21,19 @@ public:
      */
     enum {
         ROLE_START = Qt::UserRole + 1,
+        idRole,
         authorRole,
-        urlRole,
-        titleRole,
         dateRole,
-        commentRole,
-        pointRole,
+        textRole,
+        parentRole,
+        indentRole,
+        childRole,
         ROLE_END
     };
 
     Q_PROPERTY(bool loaded READ getLoaded WRITE setLoaded NOTIFY loadedChanged);
 
-    explicit NewsModel(QObject *parent = nullptr);
-    ~NewsModel();
+    explicit CommentModel(QObject *parent = nullptr);
     // return number of data's
     int rowCount(const QModelIndex &parent = QModelIndex()) const override;
     // return data by role and index
@@ -46,38 +44,43 @@ public:
 
     Qt::ItemFlags flags(const QModelIndex& index) const override;
     QHash<int, QByteArray> roleNames() const override;
-    bool insert(const QString& author, const QString& url,
-                const QString& title, const QString& date,
-                const int point, const int comment, const QModelIndex &parent = QModelIndex());
-
+    bool insert(const int id, const QString& author,
+                const QString& date, const QString& text,
+                const int cmparent);
+    bool insert(int position, int count, const QVariantList& data);
     bool getLoaded() const;
     void setLoaded(bool value);
 
-    void getPostInfo(int id);
+    int getPostid() const;
+    void setPostid(int value);
+
 public slots:
     // remove an element by index
     //    bool remove(int index, const QModelIndex &parent = QModelIndex());
-//    bool prepareAndInsert(QString filepath);
-    QStringList getFileInfo(int index) const;
+    void getCommentInfo();
+
 private slots:
-    void parsePostId(const QByteArray& datas);
-    void parsePostInfo(const QByteArray& data);
+    void parseCommentInfo(const QByteArray& data);
+//    void parsePostInfo(const QByteArray& data);
+    void getCommentInfo(int id);
+
 signals:
     void loadedChanged(const bool status);
+
+
 private:
     void checkRequestJobDone();
 
 
     QList<QVariantList> vlist;
     // list of columns
-    const QList<QByteArray> columns{"author", "url", "title", "date", "comment", "point"};
+    const QList<QByteArray> columns{"id", "author", "date", "text", "parent", "indent", "childs"};
     bool loaded;
-    QUrl topstoriesapi{"https://hacker-news.firebaseio.com/v0/topstories.json"};
-    QUrl postinfoapi{"https://hacker-news.firebaseio.com/v0/item/"};
+    QUrl commentinfoapi{"https://hacker-news.firebaseio.com/v0/item/"};
     Network networkrequest;
     int currentrequestnumber;
     int finalrequestnumber;
-    int* postid;
+    int postid;
 };
 
-#endif // NewsModel_H
+#endif // CommentModel_H
