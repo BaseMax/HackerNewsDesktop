@@ -84,7 +84,7 @@ void CommentType::setIndent(int value)
     indent = value;
 }
 
-int CommentType::childsNumber()
+int CommentType::childsNumber() const
 {
     return childs.size();
 }

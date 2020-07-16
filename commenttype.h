@@ -40,7 +40,7 @@ public:
     int getIndent() const;
     void setIndent(int value);
 
-    int childsNumber();
+    int childsNumber() const;
 private:
     int id, parent, indent;
     QString author, date, text;
