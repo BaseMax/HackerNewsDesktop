@@ -26,6 +26,7 @@ public:
         dateRole,
         textRole,
         indentRole,
+        childsRole,
         ROLE_END
     };
 
@@ -74,7 +75,7 @@ private:
 
     QList<CommentType*> vlist;
     // list of columns
-    const QList<QByteArray> columns{"id", "author", "date", "text", "indent"};
+    const QList<QByteArray> columns{"id", "author", "date", "text", "indent", "childs"};
     bool loaded;
     QUrl commentinfoapi{"https://hacker-news.firebaseio.com/v0/item/"};
     Network networkrequest;

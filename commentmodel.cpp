@@ -56,6 +56,10 @@ QVariant CommentModel::data(const QModelIndex &index, int role) const
         case indentRole:
             return temp->getIndent();
             break;
+        case childsRole:
+            return temp->childsNumber();
+            break;
+
     }
     return QVariant();
 }
