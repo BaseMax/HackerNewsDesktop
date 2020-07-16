@@ -196,14 +196,15 @@ void CommentModel::checkRequestJobDone()
     ++currentrequestnumber;
 }
 
-int CommentModel::getPostid() const
+int CommentModel::getPostId() const
 {
     return postid;
 }
 
-void CommentModel::setPostid(int value)
+void CommentModel::setPostId(int value)
 {
     postid = value;
+    emit postIdChanged();
 }
 
 
