@@ -30,6 +30,7 @@ public:
     };
 
     Q_PROPERTY(bool loaded READ getLoaded WRITE setLoaded NOTIFY loadedChanged);
+    Q_PROPERTY(int postid READ getPostId WRITE setPostId NOTIFY postIdChanged)
 
     explicit CommentModel(QObject *parent = nullptr);
     ~CommentModel();
@@ -50,8 +51,8 @@ public:
     bool getLoaded() const;
     void setLoaded(bool value);
 
-    int getPostid() const;
-    void setPostid(int value);
+    int getPostId() const;
+    void setPostId(int value);
 
 public slots:
     // remove an element by index
@@ -65,7 +66,7 @@ private slots:
 
 signals:
     void loadedChanged(const bool status);
-
+    void postIdChanged();
 
 private:
     void checkRequestJobDone();
