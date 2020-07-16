@@ -25,7 +25,6 @@ public:
         authorRole,
         dateRole,
         textRole,
-        parentRole,
         indentRole,
         ROLE_END
     };
@@ -33,6 +32,7 @@ public:
     Q_PROPERTY(bool loaded READ getLoaded WRITE setLoaded NOTIFY loadedChanged);
 
     explicit CommentModel(QObject *parent = nullptr);
+    ~CommentModel();
     // return number of data's
     int rowCount(const QModelIndex &parent = QModelIndex()) const override;
     // return data by role and index
@@ -43,10 +43,10 @@ public:
 
     Qt::ItemFlags flags(const QModelIndex& index) const override;
     QHash<int, QByteArray> roleNames() const override;
-    bool insert(const int id, const QString& author,
+    bool insert(int id, int indent, const QString& author,
                 const QString& date, const QString& text,
                 const int cmparent);
-    bool insert(int position, int count, const QVariantList& data);
+    bool insert(const CommentType& data);
     bool getLoaded() const;
     void setLoaded(bool value);
 
@@ -71,9 +71,9 @@ private:
     void checkRequestJobDone();
 
 
-    QList<QVariantList> vlist;
+    QList<CommentType*> vlist;
     // list of columns
-    const QList<QByteArray> columns{"id", "author", "date", "text", "parent", "indent"};
+    const QList<QByteArray> columns{"id", "author", "date", "text", "indent"};
     bool loaded;
     QUrl commentinfoapi{"https://hacker-news.firebaseio.com/v0/item/"};
     Network networkrequest;

@@ -6,21 +6,20 @@ CommentModel::CommentModel(QObject *parent)
 {
 //    connect(&networkrequest, &Network::complete, this, &CommentModel::parseCommentInfo);
 //    networkrequest.get();
-    QVariantList a;
-    a << 1 << "SeedPuller" << "1 Day Ago" << "This is my text" << 0 << 0 << 1;
-    QVariantList d;
-    d << 2 << "SeedPuller" << "1 Day Ago" << "This is my text" << 0 << 0 << 0;
-    QVariantList c;
-    c << 3 << "SeedPuller" << "1 Day Ago" << "This is my text" << 0 << 0 << 0;
-    QVariantList b;
-    b << 4 << "SomeLongeUsername" << "1 Day Ago" << "This is my text" << 0 << 0 << 0;
-    QVariantList f;
-    f << 5 << "SeedPuller" << "1 Day Ago" << "This is my text reply" << 1 << 20 << 0;
-    vlist.append(a);
-    vlist.append(b);
-    vlist.append(c);
-    vlist.append(d);
-//    vlist.append(f);
+    CommentType* d = new CommentType(1, 0, 0, "SeedPuller", "1 Day Ago", "this is my text", std::vector<int>{2});
+    CommentType* e = new CommentType(2, 1, 20, "SeedPuller", "1 Day Ago", "this is my reply", std::vector<int>());
+    CommentType* f = new CommentType(3, 0, 0, "SeedPuller", "1 Day Ago", "this is my text", std::vector<int>());
+    insert(*d);
+    insert(*e);
+    insert(*f);
+}
+
+CommentModel::~CommentModel()
+{
+    for (CommentType* object : vlist) {
+        delete object;
+        object = nullptr;
+    }
 }
 
 
@@ -36,12 +35,29 @@ int CommentModel::rowCount(const QModelIndex &parent) const
 
 QVariant CommentModel::data(const QModelIndex &index, int role) const
 {
-    if (!index.isValid() || vlist.size() <= 0 || role <= ROLE_START || role >= ROLE_END)
+    if (!index.isValid() || vlist.size() <= 0)
         return QVariant();
 
-    QVariantList temp = vlist.at(index.row());
-    const int column = role - (ROLE_START + 1);
-    return temp[column];
+    const CommentType* temp = vlist.at(index.row());
+
+    switch (role) {
+        case idRole:
+            return temp->getId();
+            break;
+        case authorRole:
+            return temp->getAuthor();
+            break;
+        case textRole:
+            return temp->getText();
+            break;
+        case dateRole:
+            return temp->getDate();
+            break;
+        case indentRole:
+            return temp->getIndent();
+            break;
+    }
+    return QVariant();
 }
 
 
@@ -86,26 +102,32 @@ QHash<int, QByteArray> CommentModel::roleNames() const
     return roles;
 }
 
-bool CommentModel::insert(const int id, const QString& author,
+bool CommentModel::insert(int id, int indent, const QString& author,
                           const QString& date, const QString& text,
                           const int cmparent)
 {
-    int rowcount = rowCount();
-    beginInsertRows(QModelIndex(), rowcount, rowcount);
-
-    QVariantList temp;
-    temp.append(id);
-    temp.append(author);
-    temp.append(text);
-    temp.append(date);
-    temp.append(cmparent);
-    vlist.push_back(temp);
-    endInsertRows();
-    return true;
+    CommentType* data = new CommentType(id, cmparent, indent, author, date, text, std::vector<int>());
+    return insert(*data);
 }
 
-bool CommentModel::insert(int position, int count, const QVariantList &data)
+// need some change to return more meaningful value
+bool CommentModel::insert(const CommentType& data)
 {
+    int parent = data.getParent(), position{1};
+    if (parent == 0) {
+        position = vlist.size();
+    }
+
+    for (CommentType* cm: vlist) {
+        if (cm->getId() == parent) {
+            break;
+        }
+        ++position;
+    }
+    beginInsertRows(QModelIndex(), position, position);
+    vlist.insert(position, const_cast<CommentType*>(&data));
+    endInsertRows();
+
     return true;
 }
 
@@ -150,8 +172,8 @@ void CommentModel::parseCommentInfo(const QByteArray &data)
 //    temp.append(comments);
 //    temp.append(jsonobject["score"].toInt());
 //    vlist.push_back(temp);
-    insert(id, jsonobject["by"].toString(), date.toString("dd MMM hh:mm"),
-            jsonobject["text"].toString(), parent);
+//    insert(id, jsonobject["by"].toString(), date.toString("dd MMM hh:mm"),
+//            jsonobject["text"].toString(), parent);
 
     checkRequestJobDone();
 }
