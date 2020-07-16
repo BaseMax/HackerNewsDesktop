@@ -4,17 +4,18 @@
 #include <QObject>
 #include <vector>
 
-class CommentType
+class CommentType : public QObject
 {
     Q_OBJECT
 public:
     Q_PROPERTY(int id READ getId WRITE setId)
     Q_PROPERTY(int parent READ getParent WRITE setParent)
     Q_PROPERTY(int indent READ getIndent WRITE setIndent)
+    Q_PROPERTY(int childs READ childsNumber)
     Q_PROPERTY(QString author READ getAuthor WRITE setAuthor)
     Q_PROPERTY(QString date READ getDate WRITE setDate)
     Q_PROPERTY(QString text READ getText WRITE setText)
-
+    CommentType(QObject* parent = nullptr);
     CommentType(int id, int parent, int indent,
                 const QString& author, const QString& date, const QString& text, const std::vector<int>& childs );
 
@@ -39,6 +40,7 @@ public:
     int getIndent() const;
     void setIndent(int value);
 
+    int childsNumber();
 private:
     int id, parent, indent;
     QString author, date, text;

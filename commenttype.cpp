@@ -1,5 +1,11 @@
 #include "commenttype.h"
 
+CommentType::CommentType(QObject *parent)
+    : QObject(parent)
+{
+
+}
+
 CommentType::CommentType(int id, int parent, int indent,
                          const QString &author, const QString &date,
                          const QString &text, const std::vector<int> &childs)
@@ -76,4 +82,9 @@ int CommentType::getIndent() const
 void CommentType::setIndent(int value)
 {
     indent = value;
+}
+
+int CommentType::childsNumber()
+{
+    return childs.size();
 }
