@@ -1,25 +1,26 @@
 #include "commentmodel.h"
 
 CommentModel::CommentModel(QObject *parent)
-    : QAbstractListModel(parent), loaded{false},
+    : QAbstractListModel(parent), loaded{false}, repliesloaded{false},
       currentrequestnumber{0}, finalrequestnumber{0}
 {
-//    connect(&networkrequest, &Network::complete, this, &CommentModel::parseCommentInfo);
-//    networkrequest.get();
-    CommentType* d = new CommentType(1, 0, 0, "SeedPuller", "1 Day Ago", "this is my text", std::vector<int>{2});
-    CommentType* e = new CommentType(2, 1, 20, "SeedPuller", "1 Day Ago", "this is my reply", std::vector<int>());
-    CommentType* f = new CommentType(3, 0, 0, "SeedPuller", "1 Day Ago", "this is my text", std::vector<int>());
-    insert(*d);
-    insert(*e);
-    insert(*f);
+    postid = 23855208;
+//    CommentType* d = new CommentType(1, 0, 0, "SeedPuller", "1 Day Ago", "this is my text", std::vector<int>{2});
+//    CommentType* e = new CommentType(2, 1, 20, "SeedPuller", "1 Day Ago", "this is my reply", std::vector<int>());
+//    CommentType* f = new CommentType(3, 0, 0, "SeedPuller", "1 Day Ago", "this is my text", std::vector<int>());
+//    insert(*d);
+//    insert(*e);
+//    insert(*f);
+    getPostComments();
 }
 
 CommentModel::~CommentModel()
 {
-    for (CommentType* object : vlist) {
+    for (CommentType* object : *vlist) {
         delete object;
         object = nullptr;
     }
+    delete vlist;
 }
 
 
@@ -30,16 +31,19 @@ int CommentModel::rowCount(const QModelIndex &parent) const
     if (parent.isValid())
         return 0;
 
-    return vlist.size();
+    return vlist->size();
 }
 
 QVariant CommentModel::data(const QModelIndex &index, int role) const
 {
-    if (!index.isValid() || vlist.size() <= 0)
+    if (!index.isValid() || vlist->size() <= 0)
         return QVariant();
 
-    const CommentType* temp = vlist.at(index.row());
-
+    const CommentType* temp = vlist->at(index.row());
+    if (temp == nullptr) {
+        qDebug() << "null";
+        return QVariant();
+    }
     switch (role) {
         case idRole:
             return temp->getId();
@@ -119,68 +123,92 @@ bool CommentModel::insert(const CommentType& data)
 {
     int parent = data.getParent(), position{1};
     if (parent == 0) {
-        position = vlist.size();
+        position = vlist->size();
+    } else {
+        for (CommentType* cm: *vlist) {
+            if (cm->getId() == parent) {
+                break;
+            }
+            ++position;
+        }
     }
 
-    for (CommentType* cm: vlist) {
-        if (cm->getId() == parent) {
-            break;
-        }
-        ++position;
-    }
     beginInsertRows(QModelIndex(), position, position);
-    vlist.insert(position, const_cast<CommentType*>(&data));
+    vlist->insert(position, const_cast<CommentType*>(&data));
     endInsertRows();
 
     return true;
 }
 
-//void CommentModel::parseCommentInfo(const QByteArray &datas)
-//{
-//    disconnect(&networkrequest, &Network::complete, this, &CommentModel::parseCommentInfo);
-//    connect(&networkrequest, &Network::complete, this, &CommentModel::parsePostInfo);
-//    QJsonDocument jsonresponse = QJsonDocument::fromJson(datas);
-//    QJsonArray jsonobject = jsonresponse.array();
-//    for (int i{0}; i < finalrequestnumber; ++i) {
-//        getPostInfo(jsonobject[i].toInt());
-//    }
-//}
-
 void CommentModel::parseCommentInfo(const QByteArray &data)
 {
+    qDebug() << data;
     QJsonDocument jsonresponse = QJsonDocument::fromJson(data);
     QJsonObject jsonobject = jsonresponse.object();
-    QVariantList temp;
     int parent{0};
+    int indent{0};
     const int id{jsonobject["id"].toInt()};
     QDateTime date;
-    date.setSecsSinceEpoch(jsonobject["time"].toInt());
+    std::vector<int> childs;
+    CommentType* comment;
+    QString text{jsonobject["text"].toString()};
+    // decoding html entities
+    QTextDocument textdoc;
 
     if (jsonobject["parent"].toInt() != postid) {
+        // entering this condition means this function has been called through getReplies
+        // so we have repliesindex available(getReplies function had filled it)
         parent = jsonobject["parent"].toInt();
-    }else {
-
+        indent = vlist->at(repliesindex[id])->getIndent() + 20;
     }
+
+    if (jsonobject["deleted"] != QJsonValue()) {
+        if (parent == 0) {
+             checkRequestJobDone(false);
+        } else {
+            checkRequestJobDone(true);
+        }
+        return;
+    }
+
+    textdoc.setHtml(text);
+    // i don't know what "p, li { white-space: pre-wrap; }" is. i just removed it.
+    text = textdoc.toHtml().replace("p, li { white-space: pre-wrap; }", "");
+
+    date.setSecsSinceEpoch(jsonobject["time"].toInt());
+
+
 
     if (jsonobject["kids"] != QJsonValue()) {
         QJsonArray kids = jsonobject["kids"].toArray();
-        foreach (QJsonValue child, kids) {
-            getCommentInfo(id);
+        for (QJsonValue child: kids) {
+            childs.push_back(child.toInt());
         }
     }
 
-//    temp.append(jsonobject["by"].toString());
-//    temp.append(jsonobject["url"].toString());
-//    temp.append(jsonobject["title"].toString());
-//    temp.append(date.toString("dd MMM hh:mm"));
-//    temp.append(comments);
-//    temp.append(jsonobject["score"].toInt());
-//    vlist.push_back(temp);
-//    insert(id, jsonobject["by"].toString(), date.toString("dd MMM hh:mm"),
-//            jsonobject["text"].toString(), parent);
+    comment = new CommentType(id, parent, indent, jsonobject["by"].toString(), date.toString("dd MMM hh:mm"), text, childs);
+    insert(*comment);
 
-    checkRequestJobDone();
+    if (parent == 0) {
+         checkRequestJobDone(false);
+    } else {
+        checkRequestJobDone(true);
+    }
 }
+
+void CommentModel::parsePostComments(const QByteArray &data)
+{
+    disconnect(&networkrequest, &Network::complete, this, &CommentModel::parsePostComments);
+    connect(&networkrequest, &Network::complete, this, &CommentModel::parseCommentInfo);
+    QJsonDocument jsonresponse = QJsonDocument::fromJson(data);
+    QJsonObject jsonobject = jsonresponse.object();
+    QJsonArray kids = jsonobject["kids"].toArray();
+    for (QJsonValue cmid: kids) {
+        getCommentInfo(cmid.toInt());
+    }
+}
+
+
 
 void CommentModel::getCommentInfo(int id)
 {
@@ -189,15 +217,44 @@ void CommentModel::getCommentInfo(int id)
     networkrequest.get();
 }
 
-void CommentModel::checkRequestJobDone()
+void CommentModel::getPostComments()
 {
-    if (currentrequestnumber == finalrequestnumber - 1) {
+    vlist = new QList<CommentType*>();
+    setLoaded(false);
+    disconnect(&networkrequest, &Network::complete, this, &CommentModel::parseCommentInfo);
+    connect(&networkrequest, &Network::complete, this, &CommentModel::parsePostComments);
+    networkrequest.setUrl(QUrl(commentinfoapi.toString() + QString::number(postid) + ".json"));
+    networkrequest.get();
+}
+
+void CommentModel::getReplies(int index, int id)
+{
+    if (index < 0 || index >= vlist->size()) {
+        return;
+    }
+    CommentType* item = vlist->operator[](index);
+    for (int child: item->getChilds()) {
+        ++finalrequestnumber;
+        repliesindex[id] = index;
+        networkrequest.setUrl(QUrl(commentinfoapi.toString() + QString::number(child) + ".json"));
+        networkrequest.get();
+    }
+}
+
+void CommentModel::checkRequestJobDone(bool replyMode)
+{
+    ++currentrequestnumber;
+    qDebug() << currentrequestnumber << "||" << finalrequestnumber;
+    if (currentrequestnumber == finalrequestnumber) {
         finalrequestnumber = 0;
         currentrequestnumber = 0;
+        if (replyMode) {
+            setRepliesloaded(true);
+            return;
+        }
         setLoaded(true);
         return;
     }
-    ++currentrequestnumber;
 }
 
 int CommentModel::getPostId() const
@@ -238,10 +295,30 @@ void CommentModel::setLoaded(bool value)
     emit loadedChanged(value);
 }
 
-void CommentModel::getCommentInfo()
+bool CommentModel::getRepliesloaded() const
 {
-//    qDebug() << "entered id to getPostInfo is: " << id;
-//    qDebug() << "sending request to : " << postinfoapi.toString() + QString::number(id) + ".json";
-    networkrequest.setUrl(QUrl(commentinfoapi.toString() + QString::number(postid) + ".json"));
-    networkrequest.get();
+    return repliesloaded;
+}
+
+void CommentModel::setRepliesloaded(bool value)
+{
+    if (repliesloaded == value) {
+        return;
+    }
+    repliesloaded = value;
+    emit repliesLoadedChanged();
+}
+
+void CommentModel::reset()
+{
+    disconnect(&networkrequest, &Network::complete, this, &CommentModel::parseCommentInfo);
+    disconnect(&networkrequest, &Network::complete, this, &CommentModel::parsePostComments);
+    for (CommentType* object : *vlist) {
+        delete object;
+    }
+    delete vlist;
+    vlist = nullptr;
+    setLoaded(false);
+    setRepliesloaded(false);
+    // insert replies index for deleting
 }

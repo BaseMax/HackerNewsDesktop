@@ -6,6 +6,7 @@
 #include <QJsonDocument>
 #include <QJsonArray>
 #include <QDateTime>
+#include <QTextDocument>
 #include "network.h"
 #include "commenttype.h"
 
@@ -31,6 +32,7 @@ public:
     };
 
     Q_PROPERTY(bool loaded READ getLoaded WRITE setLoaded NOTIFY loadedChanged);
+    Q_PROPERTY(bool repliesLoaded READ getRepliesloaded WRITE setRepliesloaded NOTIFY repliesLoadedChanged);
     Q_PROPERTY(int postid READ getPostId WRITE setPostId NOTIFY postIdChanged)
 
     explicit CommentModel(QObject *parent = nullptr);
@@ -45,9 +47,6 @@ public:
 
     Qt::ItemFlags flags(const QModelIndex& index) const override;
     QHash<int, QByteArray> roleNames() const override;
-    bool insert(int id, int indent, const QString& author,
-                const QString& date, const QString& text,
-                const int cmparent);
     bool insert(const CommentType& data);
     bool getLoaded() const;
     void setLoaded(bool value);
@@ -55,33 +54,45 @@ public:
     int getPostId() const;
     void setPostId(int value);
 
+    bool getRepliesloaded() const;
+    void setRepliesloaded(bool value);
+
 public slots:
     // remove an element by index
     //    bool remove(int index, const QModelIndex &parent = QModelIndex());
-    void getCommentInfo();
+    void getPostComments();
+    void getReplies(int index, int id);
+    void reset();
+    bool insert(int id, int indent, const QString& author,
+                const QString& date, const QString& text,
+                const int cmparent);
 
 private slots:
     void parseCommentInfo(const QByteArray& data);
-//    void parsePostInfo(const QByteArray& data);
+    void parsePostComments(const QByteArray& data);
     void getCommentInfo(int id);
 
 signals:
     void loadedChanged(const bool status);
     void postIdChanged();
+    void repliesLoadedChanged();
 
 private:
-    void checkRequestJobDone();
+    void checkRequestJobDone(bool replyMode);
+    void increaseRequestNumber();
 
-
-    QList<CommentType*> vlist;
+    QList<CommentType*>* vlist;
     // list of columns
     const QList<QByteArray> columns{"id", "author", "date", "text", "indent", "childs"};
     bool loaded;
+    bool repliesloaded;
     QUrl commentinfoapi{"https://hacker-news.firebaseio.com/v0/item/"};
     Network networkrequest;
     int currentrequestnumber;
     int finalrequestnumber;
     int postid;
+    // change to pointer for deleting memory
+    QHash<int, int> repliesindex;
 };
 
 #endif // CommentModel_H
