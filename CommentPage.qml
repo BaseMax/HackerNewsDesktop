@@ -2,24 +2,21 @@ import QtQuick 2.0
 import QtQuick.Controls 2.15
 import QtQuick.Layouts 1.15
 
-import QtQuick.Controls 1.4 as QQC1
-import API.CommentType 0.1
-
 Page {
     id: cmpage
     width: mainwindow.width
     height: mainwindow.height
 
-    Flickable {
+    ScrollView {
         y: toolbar.height + 50
         width: parent.width
         height: parent.height - 135
-        contentWidth: parent.width
-        contentHeight: parent.height / 2
-        ScrollBar.vertical: ScrollBar { policy: ScrollBar.AlwaysOn; interactive: true }
-        ScrollBar.horizontal: ScrollBar { policy: ScrollBar.AlwaysOn; interactive: true }
-        bottomMargin: commentview.height
-        rightMargin: commentview.width
+//        contentWidth: parent.width
+        contentHeight: cmpage.height + commentview.sizesum
+//        ScrollBar.vertical: ScrollBar { policy: ScrollBar.AlwaysOn; interactive: true }
+//        ScrollBar.horizontal: ScrollBar { policy: ScrollBar.AlwaysOn; interactive: true }
+//        bottomMargin: commentview.height
+//        rightMargin: commentview.width
         Rectangle {
             id: postbackground
 //            property var modelvalue: stackView.mainModel.get(stackView.index)
@@ -116,7 +113,7 @@ Page {
         Rectangle {
             id: commentinput
             width: postbackground.width * 0.75
-            height: 150
+            height: 120
             anchors.top: postbackground.bottom
             anchors.left: postbackground.left
             anchors.topMargin: 15
@@ -128,6 +125,7 @@ Page {
                 anchors.leftMargin: 10
                 width: parent.width - 10
                 height: parent.height - 5
+                clip: true
                 TextArea {
                     id: commenttext
 //                        width: parent.width
@@ -166,97 +164,148 @@ Page {
             }
         }
 
-        QQC1.TreeView {
-//            anchors.fill: parent
-            width: 400
-            height: 400
-            model: theModel
-            itemDelegate: Item {
+
+        ListView {
+            id: commentview
+            property real sizesum: 0
+            anchors.top: commentsubmitbtn.bottom
+            anchors.left: postbackground.left
+            anchors.topMargin: 15
+            width: postbackground.width
+            height: count * 400
+            spacing: 20
+            model: commentmodel
+            delegate: Rectangle {
+                color: "transparent"
+                width: commentview.width
+                implicitHeight: 50 + cmtext.height
                 Rectangle {
-                    anchors.fill: parent
-                    color: "grey"
+                    anchors.left: parent.left
+                    anchors.leftMargin: model.indent
+                    width: parent.width
+                    height: parent.height
+    //                implicitWidth: 50 + cmtext.width
+                    radius: 10
+                    border.width: 0.8
+                    border.color: "#E0E0E0"
+                    Component.onCompleted: {
+                        commentview.sizesum += 40 + cmtext.height
+                    }
+                    Rectangle {
+                        anchors.left: parent.left
+                        anchors.leftMargin: 1
+                        anchors.verticalCenter: parent.verticalCenter
+                        height: parent.height - 15
+                        width: 2
+                        color: "#f56565"
+                    }
+                    Rectangle {
+                        id: commentinfo
+                        anchors.left: parent.left
+                        anchors.leftMargin: 20
+                        anchors.top: parent.top
+                        anchors.topMargin: 5
+                        width: parent.width - 40
+                        height: 20
+//                        spacing: 0
+                        Label {
+                            id: authortext
+                            anchors.left: parent.left
+                            text: model.author
+                            font.bold: Font.Medium
+                        }
+                        Label {
+                            id: datetext
+                            anchors.left: authortext.right
+                            anchors.bottom: authortext.bottom
+                            anchors.leftMargin: 10
+                            anchors.bottomMargin: 2
+                            text: model.date
+                            color: "#718096"
+                            font.pixelSize: 10
+                            Layout.preferredWidth: 5
+                        }
+
+                        Label {
+                            id: seprator
+                            anchors.left: datetext.right
+                            anchors.bottom: authortext.bottom
+                            anchors.leftMargin: 5
+                            text: "|"
+                            Layout.preferredWidth: 1
+                        }
+
+                        Label {
+                            id: childnumber
+                            anchors.left: seprator.right
+                            anchors.bottom: authortext.bottom
+                            anchors.leftMargin: 5
+                            font.pixelSize: 11
+                            text: model.childs + " reply"
+                            color: "#f56565"
+                            Layout.preferredWidth: contentWidth
+                            MouseArea {
+                                anchors.fill: parent
+                                cursorShape: Qt.PointingHandCursor
+                                onClicked: {
+                                }
+                            }
+                        }
+
+                        Label {
+                            id: replyicon
+                            anchors.right: parent.right
+                            anchors.rightMargin: -5
+                            font.family: "fontello"
+                            font.pixelSize: 13
+                            text: "\uf112"
+                            color: "#9E9E9E"
+                            MouseArea {
+                                anchors.fill: parent
+                                cursorShape: Qt.PointingHandCursor
+                                onClicked: {
+                                    commentmodel.remove(index)
+                                    commentview.sizesum -= 40 + cmtext.height
+                                }
+                            }
+                        }
+
+                        Label {
+                            id: removeicon
+                            visible: loginhandler.username == model.author
+                            anchors.right: replyicon.left
+                            anchors.rightMargin: 5
+                            font.family: "fontello"
+                            font.pixelSize: 15
+                            text: "\ue800"
+                            color: "#FF3D00"
+                            MouseArea {
+                                anchors.fill: parent
+                                cursorShape: Qt.PointingHandCursor
+                                onClicked: {
+                                    commentmodel.remove(index)
+                                    commentview.sizesum -= 40 + cmtext.height
+                                }
+                            }
+                        }
+
+
+
+                    }
+
+                    Text {
+                        id: cmtext
+                        anchors.top: commentinfo.bottom
+                        anchors.topMargin: 15
+                        anchors.left: parent.left
+                        anchors.leftMargin: 15
+                        width: parent.width - 50
+                        text: model.text
+                        wrapMode: Text.Wrap
+                    }
                 }
 
-                Text {
-                    anchors.fill: parent
-                    color: styleData.textColor
-                    elide: styleData.elideMode
-                    text: styleData.value.author
-                }
-            }
-
-            QQC1.TableViewColumn {
-                role: "comment"
-//                title: "Comment"
             }
         }
-//        ListView {
-//            id: commentview
-//            anchors.top: commentsubmitbtn.bottom
-//            anchors.left: postbackground.left
-//            anchors.topMargin: 15
-//            width: postbackground.width
-//            height: count * 400
-//            interactive: false
-//            spacing: 20
-//            model: commentmodel
-////            clip: true
-//            delegate: Rectangle {
-//                width: commentview.width
-//                implicitHeight: 50 + cmtext.height
-////                implicitWidth: 50 + cmtext.width
-//                radius: 10
-//                border.width: 0.8
-//                border.color: "#E0E0E0"
-//                Rectangle {
-//                    anchors.left: parent.left
-//                    anchors.leftMargin: 1
-//                    anchors.verticalCenter: parent.verticalCenter
-//                    height: parent.height - 15
-//                    width: 2
-//                    color: "#f56565"
-//                }
-//                RowLayout {
-//                    id: commentinfo
-//                    anchors.left: parent.left
-//                    anchors.leftMargin: 20
-//                    anchors.top: parent.top
-//                    anchors.topMargin: 5
-//                    width: parent.width - 40
-//                    Label {
-//                        text: model.username
-//                        font.bold: Font.Medium
-//                    }
-//                    Label {
-//                        Layout.rightMargin: 110
-//                        text: model.date
-//                        color: "#718096"
-//                        font.pixelSize: 10
-//                    }
-//                    Label {
-//                        Layout.alignment: Qt.AlignRight
-//                        font.family: "fontello"
-//                        font.pixelSize: 15
-//                        text: "\ue800"
-//                        color: "red"
-//                        MouseArea {
-//                            anchors.fill: parent
-//                            cursorShape: Qt.PointingHandCursor
-//                            onClicked: commentmodel.remove(index)
-//                        }
-//                    }
-//                }
-//                Text {
-//                    id: cmtext
-//                    anchors.top: commentinfo.bottom
-//                    anchors.topMargin: 15
-//                    anchors.left: parent.left
-//                    anchors.leftMargin: 15
-//                    width: parent.width - 50
-//                    text: model.text
-//                    wrapMode: Text.Wrap
-//                }
-//            }
-//        }
     }
 }
