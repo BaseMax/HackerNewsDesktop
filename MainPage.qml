@@ -98,7 +98,7 @@ Page {
             width: parent.width - 10
             height: parent.height - 10
             anchors.centerIn: parent
-            model: stackView.mainModel.loaded ? stackView.mainModel : 5
+            model: stackView.mainModel.loaded ? stackView.mainModel : 7
             clip: true
             delegate: listview.model.loaded ? newsdelegate : loadingdelegate
 //            delegate: LoadingDelegate { }
