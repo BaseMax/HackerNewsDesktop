@@ -131,6 +131,7 @@ Item {
                             cursorShape: Qt.PointingHandCursor
                             onClicked: {
                                 toolbar.tbar.currentIndex = -1
+                                stackView.tabBarNeeded = false
                                 stackView.index = index
                                 commentmodel.postid = model.id
                                 commentmodel.getPostComments()
