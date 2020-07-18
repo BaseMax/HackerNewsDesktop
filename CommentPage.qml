@@ -20,7 +20,7 @@ Page {
 //        rightMargin: commentview.width
         Rectangle {
             id: postbackground
-//            property var modelvalue: stackView.mainModel.get(stackView.index)
+            property var modelvalue: stackView.mainModel.get(stackView.index)
             x: 90
             width: parent.width / 1.3
             height: 110
@@ -35,16 +35,16 @@ Page {
                 anchors.verticalCenter: parent.verticalCenter
                 font.family: "fontello"
                 font.pixelSize: 35
-                color: "#2E7D32"
-                text: "\ue803"
+                color: "#FFAB00"
+                text: "\ue807"
                 state: voted ? "voted" : "not-voted"
                 states: [
                     State {
                         name: "voted"
                         PropertyChanges {
                             target: voteicon
-                            rotation: 180
-                            color: "#f56565"
+                            rotation: 360
+                            text: "\ue808"
                         }
                     },
                     State {
@@ -52,17 +52,14 @@ Page {
                         PropertyChanges {
                             target: voteicon
                             rotation: 0
-                            color: "#2E7D32"
+                            text: "\ue807"
                         }
                     }
                 ]
                 transitions: [
                     Transition {
-                        ColorAnimation {
-                            duration: 200
-                        }
                         RotationAnimation {
-                            duration: 200
+                            duration: 400
                         }
                     }
                 ]
