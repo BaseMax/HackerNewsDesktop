@@ -27,6 +27,7 @@ Page {
             radius: 10
             border.width: 0.5
             border.color: "#E0E0E0"
+            clip: true
             Label {
                 id: voteicon
                 property bool voted: false
