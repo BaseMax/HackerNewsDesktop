@@ -37,16 +37,16 @@ Item {
                 anchors.verticalCenter: parent.verticalCenter
                 font.family: "fontello"
                 font.pixelSize: 35
-                color: "#2E7D32"
-                text: "\ue803"
+                color: "#FFAB00"
+                text: "\ue807"
                 state: voted ? "voted" : "not-voted"
                 states: [
                     State {
                         name: "voted"
                         PropertyChanges {
                             target: voteicon
-                            rotation: 180
-                            color: "#f56565"
+                            rotation: 360
+                            text: "\ue808"
                         }
                     },
                     State {
@@ -54,17 +54,14 @@ Item {
                         PropertyChanges {
                             target: voteicon
                             rotation: 0
-                            color: "#2E7D32"
+                            text: "\ue807"
                         }
                     }
                 ]
                 transitions: [
                     Transition {
-                        ColorAnimation {
-                            duration: 200
-                        }
                         RotationAnimation {
-                            duration: 200
+                            duration: 400
                         }
                     }
                 ]
@@ -92,6 +89,7 @@ Item {
                         MouseArea {
                             anchors.fill: parent
                             cursorShape: Qt.PointingHandCursor
+                            onClicked: Qt.openUrlExternally(model.url);
                         }
                     }
                     Label {
@@ -124,6 +122,8 @@ Item {
                             onClicked: {
                                 toolbar.tbar.currentIndex = -1
                                 stackView.index = index
+                                commentmodel.postid = model.id
+                                commentmodel.getPostComments()
                                 stackView.push(commentpage)
                             }
                         }
