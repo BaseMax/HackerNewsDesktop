@@ -145,7 +145,9 @@ bool CommentModel::insert(const CommentType& data)
 
 void CommentModel::parseCommentInfo(const QByteArray &data)
 {
-    qDebug() << data;
+    if (data == "null" || data == "") {
+        return;
+    }
     QJsonDocument jsonresponse = QJsonDocument::fromJson(data);
     QJsonObject jsonobject = jsonresponse.object();
     int parent{0};
@@ -162,7 +164,7 @@ void CommentModel::parseCommentInfo(const QByteArray &data)
         // entering this condition means this function has been called through getReplies
         // so we have repliesindex available(getReplies function had filled it)
         parent = jsonobject["parent"].toInt();
-        indent = vlist->at(repliesindex[id])->getIndent() + 20;
+        indent = vlist->at(repliesindex[parent])->getIndent() + 20;
     }
 
     if (jsonobject["deleted"] != QJsonValue()) {
@@ -236,9 +238,9 @@ void CommentModel::getReplies(int index, int id)
         return;
     }
     CommentType* item = vlist->operator[](index);
+    repliesindex[id] = index;
     for (int child: item->getChilds()) {
         ++finalrequestnumber;
-        repliesindex[id] = index;
         networkrequest.setUrl(QUrl(commentinfoapi.toString() + QString::number(child) + ".json"));
         networkrequest.get();
     }
@@ -247,7 +249,7 @@ void CommentModel::getReplies(int index, int id)
 void CommentModel::checkRequestJobDone(bool replyMode)
 {
     ++currentrequestnumber;
-    qDebug() << currentrequestnumber << "||" << finalrequestnumber;
+//    qDebug() << currentrequestnumber << "||" << finalrequestnumber;
     if (currentrequestnumber == finalrequestnumber) {
         finalrequestnumber = 0;
         currentrequestnumber = 0;
