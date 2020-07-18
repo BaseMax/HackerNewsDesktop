@@ -33,6 +33,10 @@ Rectangle {
                 enabled: !stackView.tabBarNeeded
                 cursorShape: Qt.PointingHandCursor
                 onClicked: {
+                    if (tabbar.currentIndex == -1) {
+                        commentmodel.reset()
+                    }
+
                     stackView.tabBarNeeded = true
                     stackView.pop()
                 }
