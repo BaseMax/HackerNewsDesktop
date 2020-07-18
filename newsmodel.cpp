@@ -153,12 +153,12 @@ void NewsModel::parsePostId(const QByteArray &datas)
     disconnect(&networkrequest, &Network::complete, this, &NewsModel::parsePostId);
     connect(&networkrequest, &Network::complete, this, &NewsModel::parsePostInfo);
     QJsonDocument jsonresponse = QJsonDocument::fromJson(datas);
-    QJsonArray jsonobject = jsonresponse.array();
+    QJsonArray jsonarray = jsonresponse.array();
+    if (jsonarray == QJsonArray()) {
+        return;
+    }
     for (int i{0}; i < finalrequestnumber; ++i) {
-        if (jsonobject == QJsonArray()) {
-            continue;
-        }
-        getPostInfo(jsonobject[i].toInt());
+        getPostInfo(jsonarray[i].toInt());
     }
 }
 
