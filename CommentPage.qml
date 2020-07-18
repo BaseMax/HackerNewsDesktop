@@ -89,8 +89,10 @@ Page {
                         MouseArea {
                             anchors.fill: parent
                             cursorShape: Qt.PointingHandCursor
+                            onClicked: Qt.openUrlExternally(postbackground.modelvalue[2]);
                         }
                     }
+
                     Label {
                         text: "(" + postbackground.modelvalue[2] + ")"
                         font.pixelSize: 12
