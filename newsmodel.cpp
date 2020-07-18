@@ -30,24 +30,13 @@ QVariant NewsModel::data(const QModelIndex &index, int role) const
     if (!index.isValid() || vlist.size() <= 0)
         return QVariant();
 
+    if (role <= ROLE_START || role >= ROLE_END) {
+        return QVariant();
+    }
+
     QVariantList temp = vlist.at(index.row());
     const int column = role - (ROLE_START + 1);
-    switch (role) {
-        case authorRole:
-            return temp[column];
-        case urlRole:
-            return temp[column];
-        case titleRole:
-            return temp[column];
-        case dateRole:
-            return temp[column];
-        case commentRole:
-            return temp[column];
-        case pointRole:
-            return temp[column];
-
-    }
-    return QVariant();
+    return temp[column];
 }
 
 
