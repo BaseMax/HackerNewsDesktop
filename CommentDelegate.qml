@@ -86,10 +86,7 @@ Rectangle {
                 MouseArea {
                     anchors.fill: parent
                     cursorShape: Qt.PointingHandCursor
-                    onClicked: {
-                        commentmodel.remove(index)
-                        commentview.sizesum -= 40 + cmtext.height
-                    }
+                    onClicked: cmpage.replyTo(model.id, model.author, model.indent)
                 }
             }
 

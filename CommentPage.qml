@@ -113,7 +113,10 @@ Page {
 
         Rectangle {
             id: commentinput
-            property real commentId
+            property real cmparent: 0
+            property real cmid: 0
+            property real indent: 0
+            property var author
             width: postbackground.width * 0.75
             height: 120
             anchors.top: postbackground.bottom
@@ -122,19 +125,46 @@ Page {
             border.width: 0.5
             border.color: "#E0E0E0"
             radius: 5
+            Rectangle {
+                id: replybar
+                visible: false
+                anchors.top: parent.top
+                anchors.horizontalCenter: parent.horizontalCenter
+                radius: 5
+                color: "#BDBDBD"
+                border.width: 0.5
+                border.color: "#E0E0E0"
+                width: parent.width - 20
+                height: 30
+                Label {
+                    anchors.centerIn: parent
+                    text: "Replying to " + commentinput.author
+                    font.bold: Font.Medium
+                }
+                ClickableText {
+                    anchors.left: parent.left
+                    anchors.leftMargin: 10
+                    anchors.verticalCenter: parent.verticalCenter
+                    font.family: "fontello"
+                    font.pixelSize: 12
+                    text: "\ue800"
+                    color: "#FF3D00"
+                    onClicked: cmpage.disableReplyTo()
+                }
+            }
             ScrollView {
                 anchors.left: parent.left
                 anchors.leftMargin: 10
+                anchors.top: parent.top
+                anchors.topMargin: 15
                 width: parent.width - 10
                 height: parent.height - 5
                 clip: true
                 TextArea {
                     id: commenttext
-//                        width: parent.width
-//                        anchors.fill: parent
                     placeholderText: "Enter your comment here"
                     wrapMode: TextEdit.Wrap
-//                    topPadding: replybar.visible ? 50 : 0
+                    topPadding: replybar.visible ? 20 : 0
                     background: Rectangle {
                         color: "transparent"
                     }
@@ -160,10 +190,9 @@ Page {
             bgitem.border.color: "#f56565"
             bgitem.radius: 10
             onClicked: {
-                commentmodel.append({username: "SeedPuller", date: "Now", text: commenttext.text})
-                commenttext.text = ""
-//                        stackView.pop()
-//                        tabbar.currentIndex = 0
+                ++commentinput.cmid
+                commentmodel.insert(commentinput.cmid, commentinput.indent, loginhandler.username, "1 Sec Ago", commenttext.text, commentinput.cmparent)
+                cmpage.reset()
             }
         }
 
@@ -221,5 +250,22 @@ Page {
             LoadingDelegate { width: commentview.width }
         }
 
+    }
+
+    function replyTo(parent, author, indent) {
+        commentinput.cmparent = parent
+        commentinput.author = author
+        commentinput.indent = indent + 20
+        replybar.visible = true
+    }
+    function disableReplyTo() {
+        commentinput.author = ""
+        commentinput.indent = 0
+        commentinput.cmparent = 0
+        replybar.visible = false
+    }
+    function reset() {
+        disableReplyTo();
+        commenttext.clear()
     }
 }
