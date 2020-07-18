@@ -66,8 +66,15 @@ Page {
                 ]
                 MouseArea {
                     anchors.fill: parent
-                    onClicked: voteicon.voted = !voteicon.voted
                     cursorShape: Qt.PointingHandCursor
+                    onClicked: {
+                        voteicon.voted = !voteicon.voted
+                        if (voteicon.voted) {
+                            points.text = (Number(postbackground.modelvalue[6])+1) + " pts"
+                        } else {
+                            points.text = postbackground.modelvalue[6] + " pts"
+                        }
+                    }
                 }
             }
             ColumnLayout {
@@ -93,6 +100,7 @@ Page {
                 RowLayout {
                     spacing: 2
                     Label {
+                        id: points
                         font.pixelSize: 11
                         text: postbackground.modelvalue[6] + " pts"
                     }
