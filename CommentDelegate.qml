@@ -63,7 +63,7 @@ Rectangle {
                 Layout.preferredWidth: 1
             }
 
-            Label {
+            ClickableText {
                 id: childnumber
                 anchors.left: seprator.right
                 anchors.bottom: authortext.bottom
@@ -72,13 +72,7 @@ Rectangle {
                 text: model.childs + " reply"
                 color: "#f56565"
                 Layout.preferredWidth: contentWidth
-                MouseArea {
-                    anchors.fill: parent
-                    cursorShape: Qt.PointingHandCursor
-                    onClicked: {
-                        commentmodel.getReplies(index, model.id)
-                    }
-                }
+                onClicked: commentmodel.getReplies(index, model.id)
             }
 
             Label {
