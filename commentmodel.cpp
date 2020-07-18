@@ -1,21 +1,24 @@
 #include "commentmodel.h"
 
 CommentModel::CommentModel(QObject *parent)
-    : QAbstractListModel(parent), loaded{false}, repliesloaded{false},
+    : QAbstractListModel(parent), vlist{nullptr}, loaded{false}, repliesloaded{false},
       currentrequestnumber{0}, finalrequestnumber{0}
 {
-    postid = 23855208;
+//    postid = 23855208;
 //    CommentType* d = new CommentType(1, 0, 0, "SeedPuller", "1 Day Ago", "this is my text", std::vector<int>{2});
 //    CommentType* e = new CommentType(2, 1, 20, "SeedPuller", "1 Day Ago", "this is my reply", std::vector<int>());
 //    CommentType* f = new CommentType(3, 0, 0, "SeedPuller", "1 Day Ago", "this is my text", std::vector<int>());
 //    insert(*d);
 //    insert(*e);
 //    insert(*f);
-    getPostComments();
+//    getPostComments();
 }
 
 CommentModel::~CommentModel()
 {
+    if (vlist == nullptr) {
+        return;
+    }
     for (CommentType* object : *vlist) {
         delete object;
         object = nullptr;
