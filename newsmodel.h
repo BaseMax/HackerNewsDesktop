@@ -8,11 +8,6 @@
 #include <QDateTime>
 #include "network.h"
 
-//#define DB_HOSTNAME    "localhost"
-//#define DB_NAME        "modeldb.db"
-//#define DB_TABLE       "debtors"
-
-
 class NewsModel : public QAbstractListModel
 {
     Q_OBJECT
