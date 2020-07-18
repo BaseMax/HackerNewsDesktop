@@ -72,10 +72,10 @@ Rectangle {
                 text: model.childs + " reply"
                 color: "#f56565"
                 Layout.preferredWidth: contentWidth
-                onClicked: commentmodel.getReplies(index, model.id)
+                onClicked: model.childs != 0 ? commentmodel.getReplies(index, model.id) : 0
             }
 
-            Label {
+            ClickableText {
                 id: replyicon
                 anchors.right: parent.right
                 anchors.rightMargin: -5
@@ -83,11 +83,7 @@ Rectangle {
                 font.pixelSize: 13
                 text: "\uf112"
                 color: "#9E9E9E"
-                MouseArea {
-                    anchors.fill: parent
-                    cursorShape: Qt.PointingHandCursor
-                    onClicked: cmpage.replyTo(model.id, model.author, model.indent)
-                }
+                onClicked: cmpage.replyTo(model.id, model.author, model.indent)
             }
 
             Label {
