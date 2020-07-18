@@ -130,6 +130,12 @@ Item {
                             anchors.fill: parent
                             cursorShape: Qt.PointingHandCursor
                             onClicked: {
+                                if (!loginhandler.login) {
+                                    stackView.tabBarNeeded = false
+                                    stackView.push(loginpage)
+                                    return;
+                                }
+
                                 toolbar.tbar.currentIndex = -1
                                 stackView.tabBarNeeded = false
                                 stackView.index = index
