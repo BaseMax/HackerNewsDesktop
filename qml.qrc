@@ -11,5 +11,7 @@
         <file>MyToolBar.qml</file>
         <file>NewsDelegate.qml</file>
         <file>LoadingDelegate.qml</file>
+        <file>CommentDelegate.qml</file>
+        <file>ClickableText.qml</file>
     </qresource>
 </RCC>
