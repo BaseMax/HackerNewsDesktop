@@ -274,16 +274,12 @@ void CommentModel::setPostId(int value)
 }
 
 
-//bool Model::remove(int index, const QModelIndex& parent) {
-////        qDebug() << "removing index number: " << index;
-//        beginRemoveRows(parent, index, index);
-//        if (!removeRow(vlist[index][0].toInt())) {
-//            qDebug() << db.getError();
-//        }
-//        vlist.removeAt(index);
-//        endRemoveRows();
-//        return true;
-//}
+bool CommentModel::remove(int index, const QModelIndex& parent) {
+        beginRemoveRows(parent, index, index);
+        delete vlist->takeAt(index);
+        endRemoveRows();
+        return true;
+}
 
 
 bool CommentModel::getLoaded() const
@@ -316,6 +312,7 @@ void CommentModel::setRepliesloaded(bool value)
 
 void CommentModel::reset()
 {
+    qDebug()<< "reset begin";
     disconnect(&networkrequest, &Network::complete, this, &CommentModel::parseCommentInfo);
     disconnect(&networkrequest, &Network::complete, this, &CommentModel::parsePostComments);
     for (CommentType* object : *vlist) {

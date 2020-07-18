@@ -27,6 +27,7 @@ Rectangle {
             width: 2
             color: "#f56565"
         }
+
         Rectangle {
             id: commentinfo
             anchors.left: parent.left
@@ -104,8 +105,6 @@ Rectangle {
                     }
                 }
             }
-
-
 
         }
 

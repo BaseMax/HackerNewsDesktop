@@ -59,7 +59,7 @@ public:
 
 public slots:
     // remove an element by index
-    //    bool remove(int index, const QModelIndex &parent = QModelIndex());
+    bool remove(int index, const QModelIndex &parent = QModelIndex());
     void getPostComments();
     void getReplies(int index, int id);
     void reset();
