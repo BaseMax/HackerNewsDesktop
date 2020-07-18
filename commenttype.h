@@ -4,6 +4,8 @@
 #include <QObject>
 #include <vector>
 
+#include <QDebug>
+
 class CommentType : public QObject
 {
     Q_OBJECT
