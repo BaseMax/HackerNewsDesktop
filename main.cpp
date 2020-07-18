@@ -3,13 +3,15 @@
 #include <QDebug>
 #include "newsmodel.h"
 #include "loginhandler.h"
-//#include <commentmodel.h>
+#include "commentmodel.h"
+#include "commenttype.h"
 
 int main(int argc, char *argv[])
 {
     qmlRegisterType<NewsModel>("API.NewsModel", 0, 1, "NewsModel");
     qmlRegisterType<LoginHandler>("API.LoginHandler", 0, 1, "LoginHandler");
-//    qmlRegisterType<CommentModel>("API.CommentModel", 0, 1, "CommentModel");
+    qmlRegisterType<CommentModel>("API.CommentModel", 0, 1, "CommentModel");
+    qmlRegisterType<CommentType>("API.CommentType", 0, 1, "CommentType");
 
     QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
     QGuiApplication app(argc, argv);
