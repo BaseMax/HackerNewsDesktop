@@ -36,7 +36,7 @@ Rectangle {
                     if (tabbar.currentIndex == -1) {
                         commentmodel.reset()
                     }
-
+                    tabbar.currentIndex = 0
                     stackView.tabBarNeeded = true
                     stackView.pop()
                 }
