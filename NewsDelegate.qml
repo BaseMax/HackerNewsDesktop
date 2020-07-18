@@ -36,7 +36,7 @@ Item {
                 anchors.leftMargin: 15
                 anchors.verticalCenter: parent.verticalCenter
                 font.family: "fontello"
-                font.pixelSize: 35
+                font.pixelSize: 26
                 color: "#FFAB00"
                 text: "\ue807"
                 state: voted ? "voted" : "not-voted"
@@ -67,7 +67,16 @@ Item {
                 ]
                 MouseArea {
                     anchors.fill: parent
-                    onClicked: voteicon.voted = !voteicon.voted
+                    onClicked: {
+                        voteicon.voted = !voteicon.voted
+                        if (voteicon.voted) {
+                            points.text = (model.point + 1) + " pts"
+                        } else {
+                            points.text = model.point + " pts"
+                        }
+
+                    }
+
                     cursorShape: Qt.PointingHandCursor
                 }
             }
@@ -101,6 +110,7 @@ Item {
                 RowLayout {
                     spacing: 2
                     Label {
+                        id: points
                         font.pixelSize: 11
                         text: model.point + " pts"
                     }
