@@ -122,6 +122,21 @@ bool NewsModel::insert(const int id, const QString& author, const QString& url,
 //    return true;
 //}
 
+QStringList NewsModel::getFileInfo(int index) const
+{
+    QStringList fileinfo{vlist[index][3].toString(), vlist[index][0].toString()};
+    return fileinfo;
+}
+
+QStringList NewsModel::get(int index)
+{
+    QStringList list;
+    foreach (QVariant var, vlist[index]) {
+        list.append(var.toString());
+    }
+    return list;
+}
+
 void NewsModel::parsePostId(const QByteArray &datas)
 {
     disconnect(&networkrequest, &Network::complete, this, &NewsModel::parsePostId);
