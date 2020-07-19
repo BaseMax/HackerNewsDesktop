@@ -101,7 +101,34 @@ Page {
             model: stackView.mainModel.loaded ? stackView.mainModel : 7
             clip: true
             delegate: listview.model.loaded ? newsdelegate : loadingdelegate
-//            delegate: LoadingDelegate { }
+
+            add: Transition {
+                NumberAnimation {
+                    property: "x"
+                    from: -300
+                    duration: 200
+                }
+            }
+
+            removeDisplaced: Transition {
+                NumberAnimation {
+                    properties: "y"
+                    duration: 300
+                }
+            }
+            addDisplaced: Transition {
+                NumberAnimation {
+                    properties: "y"
+                    duration: 300
+                }
+            }
+            remove: Transition {
+                NumberAnimation {
+                    property: "x"
+                    to: -parent.width
+                    duration: 200
+                }
+            }
         }
 
     }
