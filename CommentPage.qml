@@ -18,6 +18,57 @@ Page {
 //        ScrollBar.horizontal: ScrollBar { policy: ScrollBar.AlwaysOn; interactive: true }
 //        bottomMargin: commentview.height
 //        rightMargin: commentview.width
+        Rectangle {
+            id: postbackground
+            property var modelvalue: stackView.mainModel.get(stackView.index)
+            x: 90
+            width: parent.width / 1.3
+            height: 110
+            radius: 10
+            border.width: 0.5
+            border.color: "#E0E0E0"
+            clip: true
+            ColumnLayout {
+                anchors.verticalCenter: parent.verticalCenter
+                anchors.left: parent.left
+                anchors.leftMargin: 15
+                spacing: 0
+                RowLayout {
+                    Label {
+                        text: postbackground.modelvalue[3]
+                        font.pixelSize: 20
+                        MouseArea {
+                            anchors.fill: parent
+                            cursorShape: Qt.PointingHandCursor
+                            onClicked: Qt.openUrlExternally(postbackground.modelvalue[2]);
+                        }
+                    }
+
+                    Label {
+                        text: "(" + postbackground.modelvalue[2] + ")"
+                        font.pixelSize: 12
+                    }
+                }
+
+                RowLayout {
+                    spacing: 2
+                    Label {
+                        id: points
+                        font.pixelSize: 11
+                        text: postbackground.modelvalue[6] + " pts"
+                    }
+                    Label {
+                        font.pixelSize: 11
+                        text: "by " + postbackground.modelvalue[1]
+                    }
+                    Label {
+                        font.pixelSize: 11
+                        text: postbackground.modelvalue[4]
+                    }
+                }
+            }
+        }
+
 
         Rectangle {
             id: commentinput
