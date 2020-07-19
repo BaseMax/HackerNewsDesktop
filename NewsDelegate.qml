@@ -122,27 +122,23 @@ Item {
 //                        font.pixelSize: 11
 //                        text: model.date + " |"
 //                    }
-                    Label {
+                    ClickableText {
                         font.pixelSize: 11
                         text: model.comment + " comments"
                         color: "#f56565"
-                        MouseArea {
-                            anchors.fill: parent
-                            cursorShape: Qt.PointingHandCursor
-                            onClicked: {
-                                if (!loginhandler.login) {
-                                    stackView.tabBarNeeded = false
-                                    stackView.push(loginpage)
-                                    return;
-                                }
-
-                                toolbar.tbar.currentIndex = -1
+                        onClicked: {
+                            if (!loginhandler.login) {
                                 stackView.tabBarNeeded = false
-                                stackView.index = index
-                                commentmodel.postid = model.id
-                                commentmodel.getPostComments()
-                                stackView.push(commentpage)
+                                stackView.push(loginpage)
+                                return;
                             }
+
+                            toolbar.tbar.currentIndex = -1
+                            stackView.tabBarNeeded = false
+                            stackView.index = index
+                            commentmodel.postid = model.id
+                            commentmodel.getPostComments()
+                            stackView.push(commentpage)
                         }
                     }
 
