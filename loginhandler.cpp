@@ -39,11 +39,12 @@ bool LoginHandler::tryLogin(const QString email, const QString password)
     return networkrequest.post(data);
 }
 
-bool LoginHandler::trySingUp(const QString email, const QString password)
+bool LoginHandler::trySignUp(const QString username, const QString email, const QString password)
 {
     if (email.trimmed() == "" || password.trimmed() == "") {
         return false;
     }
+    this->username = username;
     QByteArray data = (QString("email=") + email + QString("&password=") + password + QString("&returnSecureToken=true")).toUtf8();
     connect(&networkrequest, &Network::complete, this, &LoginHandler::parseSignUp);
     QString url = "https://www.googleapis.com/identitytoolkit/v3/relyingparty/signupNewUser?key=AIzaSyAX9GJ9iWws_OHxHRp1NJQkW84YKGDSOzo";
@@ -106,7 +107,9 @@ void LoginHandler::parseUserInfo(const QByteArray &data)
     QJsonDocument jsonresponse = QJsonDocument::fromJson(data);
     QJsonObject jsonobject = jsonresponse.object();
     jsonobject = (jsonobject["users"].toArray())[0].toObject();
-    username = jsonobject["displayName"].toString();
+    if (jsonobject["displayName"].toString() != "") {
+        username = jsonobject["displayName"].toString();
+    }
 }
 
 void LoginHandler::fetchUserInfo()

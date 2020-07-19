@@ -2,10 +2,10 @@
 #define LOGINHANDLER_H
 
 #include <QObject>
-#include "network.h"
 #include <QJsonObject>
 #include <QJsonDocument>
 #include <QJsonArray>
+#include "network.h"
 
 class LoginHandler : public QObject
 {
@@ -24,7 +24,7 @@ public:
 
 public slots:
     bool tryLogin(const QString email, const QString password);
-    bool trySingUp(const QString email, const QString password);
+    bool trySignUp(const QString username, const QString email, const QString password);
     void signOut();
 
 private slots:

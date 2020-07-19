@@ -17,6 +17,7 @@ Page {
             text: "Username"
         }
         TextField {
+            id: usernametext
             visible: logpage.signup
             Layout.fillWidth: true
             placeholderText: "Enter your Username"
@@ -69,7 +70,7 @@ Page {
             bgitem.border.color: "#f56565"
             onClicked: {
                 if (logpage.signup) {
-                    loginhandler.trySingUp(emailtext.text, passwordtext.text)
+                    loginhandler.trySignUp(usernametext.text, emailtext.text, passwordtext.text)
                     loginhandler.loginattempt = true
                     return
                 }
