@@ -7,6 +7,7 @@ Page {
     width: mainwindow.width
     height: mainwindow.height
     property bool signup: false
+    property real cmid: 0
     ColumnLayout {
         id: login
         width: parent.width / 3
@@ -41,7 +42,9 @@ Page {
             bgitem.border.width: 0
             bgitem.border.color: "#f56565"
             onClicked: {
-                model1.insert(0, {url: urltext.text, title: titletext.text, comment: 0, points: 0, date: "now", author: "SeedPuller"})
+                ++cmid;
+                newsmodel.insert(cmid, loginhandler.username, urltext.text, titletext.text, "now", 0, 0)
+//                model1.insert(0, {url: urltext.text, title: titletext.text, comment: 0, points: 0, date: "now", author: "SeedPuller"})
                 stackView.pop()
                 toolbar.tbar.currentIndex = 0
             }
