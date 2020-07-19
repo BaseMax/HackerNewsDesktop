@@ -3,6 +3,7 @@ import QtQuick.Controls 2.15
 import QtQuick.Layouts 1.15
 import API.LoginHandler 0.1
 import API.NewsModel 0.1
+import API.CommentModel 0.1
 
 ApplicationWindow {
     id: mainwindow
@@ -53,13 +54,8 @@ ApplicationWindow {
         CommentPage { }
     }
 
-    ListModel {
+    CommentModel {
         id: commentmodel
-        ListElement {
-            username: "SeedPuller"
-            date: "1 Day ago"
-            text: "Hello this is my comment\nasdasdadnasdasda\dnasdasdasd\nasdasdasdas\nasdasd"
-        }
     }
 
     NewsModel {
@@ -67,10 +63,14 @@ ApplicationWindow {
         loaded: false
     }
 
-    NewsModel {
+    Component {
         id: searchmodel
-        loaded: false
+//        loaded: false
+        Rectangle {
+
+        }
     }
+
     LoginHandler {
         id: loginhandler
         property bool loginattempt: false
@@ -80,9 +80,10 @@ ApplicationWindow {
                 stackView.pop()
                 stackView.tabBarNeeded = true
                 loginhandler.loginattempt = false
+                stackView.loginFailed = false
                 return
             }
-            if (!loginhandler.signout) {
+            if (!loginhandler.signout && loginattempt) {
                 stackView.loginFailed = true
             }
             loginhandler.loginattempt = false
