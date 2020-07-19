@@ -85,8 +85,8 @@ bool NewsModel::insert(const int id, const QString& author, const QString& url,
                        const QString& title, const QString& date,
                        const int point, const int comment, const QModelIndex &parent)
 {
-    int rowcount = rowCount();
-    beginInsertRows(parent, rowcount, rowcount);
+//    int rowcount = rowCount();
+    beginInsertRows(parent, 0, 0);
 
     QVariantList temp;
     temp.append(id);
@@ -96,7 +96,7 @@ bool NewsModel::insert(const int id, const QString& author, const QString& url,
     temp.append(date);
     temp.append(point);
     temp.append(comment);
-    vlist.push_back(temp);
+    vlist.push_front(temp);
     endInsertRows();
     return true;
 }
@@ -176,16 +176,13 @@ void NewsModel::checkRequestJobDone()
 }
 
 
-//bool Model::remove(int index, const QModelIndex& parent) {
-////        qDebug() << "removing index number: " << index;
-//        beginRemoveRows(parent, index, index);
-//        if (!removeRow(vlist[index][0].toInt())) {
-//            qDebug() << db.getError();
-//        }
-//        vlist.removeAt(index);
-//        endRemoveRows();
-//        return true;
-//}
+bool NewsModel::remove(int index, const QModelIndex& parent) {
+//        qDebug() << "removing index number: " << index;
+        beginRemoveRows(parent, index, index);
+        vlist.removeAt(index);
+        endRemoveRows();
+        return true;
+}
 
 
 bool NewsModel::getLoaded() const

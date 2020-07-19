@@ -145,6 +145,13 @@ Item {
                             }
                         }
                     }
+
+                    ClickableText {
+                        visible: model.author == loginhandler.username
+                        text: "| delete"
+                        color: "#FF3D00"
+                        onClicked: stackView.mainModel.remove(index)
+                    }
                 }
             }
 

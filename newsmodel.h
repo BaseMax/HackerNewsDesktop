@@ -53,6 +53,8 @@ public slots:
                 const QString& date, const int point,
                 const int comment, const QModelIndex &parent = QModelIndex());
 
+    bool remove(int index, const QModelIndex& parent = QModelIndex());
+
 private slots:
     void parsePostId(const QByteArray& datas);
     void parsePostInfo(const QByteArray& data);
