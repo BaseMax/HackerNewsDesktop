@@ -41,21 +41,17 @@ public:
 
     Qt::ItemFlags flags(const QModelIndex& index) const override;
     QHash<int, QByteArray> roleNames() const override;
-    bool insert(const int id, const QString& author,
-                const QString& url, const QString& title,
-                const QString& date, const int point,
-                const int comment, const QModelIndex &parent = QModelIndex());
 
     bool getLoaded() const;
     void setLoaded(bool value);
 
     void getPostInfo(int id);
 public slots:
-    // remove an element by index
-    //    bool remove(int index, const QModelIndex &parent = QModelIndex());
-//    bool prepareAndInsert(QString filepath);
-    QStringList getFileInfo(int index) const;
     QStringList get(int index);
+    bool insert(const int id, const QString& author,
+                const QString& url, const QString& title,
+                const QString& date, const int point,
+                const int comment, const QModelIndex &parent = QModelIndex());
 
 private slots:
     void parsePostId(const QByteArray& datas);

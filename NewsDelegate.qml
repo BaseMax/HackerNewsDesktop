@@ -147,6 +147,7 @@ Item {
                     }
                 }
             }
+
             Label {
                 anchors.right: parent.right
                 anchors.rightMargin: 10
