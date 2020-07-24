@@ -1,14 +1,15 @@
 #include "network.h"
-#include <QDebug>
 
 Network::Network(QObject *parent) : QObject(parent), byteheaders{"", ""}
 {
     connect(&netaccman, SIGNAL(finished(QNetworkReply*)), this, SLOT(finished(QNetworkReply*)));
+    netaccman.setProxy(QNetworkProxy(QNetworkProxy::Socks5Proxy, "127.0.0.1", 9050));
 }
 
 Network::Network(QUrl url, QObject *parent) : QObject(parent), url{url}, byteheaders{"", ""}
 {
     connect(&netaccman, SIGNAL(finished(QNetworkReply*)), this, SLOT(finished(QNetworkReply*)));
+    netaccman.setProxy(QNetworkProxy(QNetworkProxy::Socks5Proxy, "127.0.0.1", 9050));
 }
 
 QHash<QByteArray, QByteArray> Network::getHeaders() const

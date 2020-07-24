@@ -14,14 +14,14 @@ DEFINES += QT_DEPRECATED_WARNINGS
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
-    commenttype.cpp \
-    loginhandler.cpp \
-    main.cpp \
-    network.cpp \
-    newsmodel.cpp \
-    commentmodel.cpp \
+    source/commenttype.cpp \
+    source/loginhandler.cpp \
+    source/main.cpp \
+    source/network.cpp \
+    source/newsmodel.cpp \
+    source/commentmodel.cpp \
 
-RESOURCES += qml.qrc
+RESOURCES += qml/qml.qrc
 
 # Additional import path used to resolve QML modules in Qt Creator's code model
 QML_IMPORT_PATH =
@@ -35,8 +35,8 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 !isEmpty(target.path): INSTALLS += target
 
 HEADERS += \
-    commenttype.h \
-    loginhandler.h \
-    network.h \
-    newsmodel.h \
-    commentmodel.h \
+    header/commenttype.h \
+    header/loginhandler.h \
+    header/network.h \
+    header/newsmodel.h \
+    header/commentmodel.h \
