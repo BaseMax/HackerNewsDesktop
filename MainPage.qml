@@ -132,7 +132,7 @@ Page {
         }
 
         ClickableText {
-            visible: newsmodel.loaded
+            visible: stackView.mainModel.loaded && stackView.mainModel != searchmodel
             anchors.horizontalCenter: listview.horizontalCenter
             anchors.top: listview.bottom
             anchors.topMargin: 13
