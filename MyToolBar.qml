@@ -51,7 +51,7 @@ Rectangle {
             currentIndex: 0
             orientation: ListView.Horizontal
             interactive: false
-            model: ["New", "Top", "Search", "Submit"]
+            model: ["Top", "New", "Search", "Submit"]
             spacing: 10
             delegate: Item {
                 width: 70
