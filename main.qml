@@ -60,7 +60,12 @@ ApplicationWindow {
 
     NewsModel {
         id: newsmodel
-        loaded: false
+        Component.onCompleted: fetchNewsId();
+        onIsReadyChanged: {
+            if (isReady) {
+                getPostInfo()
+            }
+        }
     }
 
     Component {

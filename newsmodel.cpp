@@ -1,19 +1,11 @@
 #include "newsmodel.h"
 
 NewsModel::NewsModel(QObject *parent)
-    : QAbstractListModel(parent), loaded{false}, networkrequest(topstoriesapi),
-      currentrequestnumber{0}, finalrequestnumber{10}
+    : QAbstractListModel(parent), loaded{false}, currentrequestnumber{0},
+     finalrequestnumber{10}, isidfetched{false}
 {
 
-//    connect(&networkrequest, SIGNAL(complete(QByteArray&)), this, SLOT(parsePostId(QByteArray&)));
-    connect(&networkrequest, &Network::complete, this, &NewsModel::parsePostId);
-    networkrequest.get();
-//    for (int i{0}; i < finalrequestnumber; ++i) {
-//        networkrequest.setUrl(QUrl(postinfoapi.toString() + postid[i] + ".json"));
-//        networkrequest.get();
-//    }
 }
-
 
 int NewsModel::rowCount(const QModelIndex &parent) const
 {
@@ -140,9 +132,10 @@ void NewsModel::parsePostId(const QByteArray &datas)
     if (jsonarray == QJsonArray()) {
         return;
     }
-    for (int i{0}; i < finalrequestnumber; ++i) {
-        getPostInfo(jsonarray[i].toInt());
+    foreach (QJsonValue val, jsonarray) {
+        postids << val.toInt();
     }
+    setIsidfetched(true);
 }
 
 
@@ -168,22 +161,60 @@ void NewsModel::parsePostInfo(const QByteArray &data)
 void NewsModel::checkRequestJobDone()
 {
     if (currentrequestnumber == finalrequestnumber - 1) {
-        currentrequestnumber = 0;
+        finalrequestnumber += 10;
         setLoaded(true);
         return;
     }
     ++currentrequestnumber;
 }
 
+bool NewsModel::getIsidfetched() const
+{
+    return isidfetched;
+}
+
+void NewsModel::setIsidfetched(bool value)
+{
+    if (value != isidfetched) {
+        isidfetched = value;
+        emit isidfetchedChanged();
+    }
+}
+
 
 bool NewsModel::remove(int index, const QModelIndex& parent) {
-//        qDebug() << "removing index number: " << index;
-        beginRemoveRows(parent, index, index);
+    //        qDebug() << "removing index number: " << index;
+    beginRemoveRows(parent, index, index);
         vlist.removeAt(index);
         endRemoveRows();
         return true;
 }
 
+
+void NewsModel::fetchNewsId()
+{
+    setIsidfetched(false);
+    disconnect(&networkrequest, &Network::complete, this, &NewsModel::parsePostInfo);
+    connect(&networkrequest, &Network::complete, this, &NewsModel::parsePostId);
+    networkrequest.setUrl(topstoriesapi);
+    networkrequest.get();
+}
+
+void NewsModel::getPostInfo()
+{
+//    qDebug() << "entered id to getPostInfo is: " << id;
+//    qDebug() << "sending request to : " << postinfoapi.toString() + QString::number(id) + ".json";
+    int vlistsize = vlist.size();
+    if ((10 + vlistsize) >= postids.size()) {
+        // this should change to handle fetching new id's and not just returning something.
+        return;
+    }
+    setLoaded(false);
+    for (int i{finalrequestnumber - 10}; i <= finalrequestnumber; ++i) {
+        networkrequest.setUrl(QUrl(postinfoapi.toString() + QString::number(postids[vlistsize + i]) + ".json"));
+        networkrequest.get();
+    }
+}
 
 bool NewsModel::getLoaded() const
 {
@@ -197,12 +228,4 @@ void NewsModel::setLoaded(bool value)
     }
     loaded = value;
     emit loadedChanged(value);
-}
-
-void NewsModel::getPostInfo(int id)
-{
-//    qDebug() << "entered id to getPostInfo is: " << id;
-//    qDebug() << "sending request to : " << postinfoapi.toString() + QString::number(id) + ".json";
-    networkrequest.setUrl(QUrl(postinfoapi.toString() + QString::number(id) + ".json"));
-    networkrequest.get();
 }

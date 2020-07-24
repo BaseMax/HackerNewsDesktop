@@ -29,6 +29,7 @@ public:
     };
 
     Q_PROPERTY(bool loaded READ getLoaded WRITE setLoaded NOTIFY loadedChanged);
+    Q_PROPERTY(bool isReady READ getIsidfetched WRITE setIsidfetched NOTIFY isidfetchedChanged)
 
     explicit NewsModel(QObject *parent = nullptr);
     // return number of data's
@@ -45,7 +46,9 @@ public:
     bool getLoaded() const;
     void setLoaded(bool value);
 
-    void getPostInfo(int id);
+    bool getIsidfetched() const;
+    void setIsidfetched(bool value);
+
 public slots:
     QStringList get(int index);
     bool insert(const int id, const QString& author,
@@ -54,6 +57,8 @@ public slots:
                 const int comment, const QModelIndex &parent = QModelIndex());
 
     bool remove(int index, const QModelIndex& parent = QModelIndex());
+    void fetchNewsId();
+    void getPostInfo();
 
 private slots:
     void parsePostId(const QByteArray& datas);
@@ -61,6 +66,7 @@ private slots:
 
 signals:
     void loadedChanged(const bool status);
+    void isidfetchedChanged() const;
 
 private:
     void checkRequestJobDone();
@@ -75,6 +81,8 @@ private:
     Network networkrequest;
     int currentrequestnumber;
     int finalrequestnumber;
+    bool isidfetched;
+    QList<int> postids;
 };
 
 #endif // NewsModel_H

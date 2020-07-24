@@ -131,6 +131,17 @@ Page {
             }
         }
 
+        ClickableText {
+            visible: newsmodel.loaded
+            anchors.horizontalCenter: listview.horizontalCenter
+            anchors.top: listview.bottom
+            anchors.topMargin: 13
+            text: "Load More..."
+            color: "#f56565"
+            font.bold: Font.Medium
+            onClicked: newsmodel.getPostInfo()
+        }
+
     }
 
     Component {
