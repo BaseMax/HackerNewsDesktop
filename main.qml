@@ -68,12 +68,8 @@ ApplicationWindow {
         }
     }
 
-    Component {
+    NewsModel {
         id: searchmodel
-//        loaded: false
-        Rectangle {
-
-        }
     }
 
     LoginHandler {
