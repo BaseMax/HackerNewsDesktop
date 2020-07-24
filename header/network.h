@@ -5,7 +5,7 @@
 #include <QNetworkAccessManager>
 #include <QNetworkReply>
 #include <QNetworkRequest>
-#include <QNetworkProxy>
+// #include <QNetworkProxy>
 
 #include <QDebug>
 
