@@ -10,7 +10,7 @@ This project is a desktop client written in C++/Qt(QtQuick) for accessing Hacker
 
 ## Team
 
-A old project about 2 years ago.
+An old project about 2 years ago.
 
 - SeedPuller
 - Max Base
